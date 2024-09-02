@@ -8,7 +8,8 @@ import {
 import Login from "../src/login";
 import Register from "../src/register";
 import ChefDashboard from "./chefdashboard";
-import AddRecipe from "./pages/AddRecipe";
+import DishesPage from "./dishespage";
+import DishDetailsPage from "./dishdetailspage";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/chef" element={<ChefDashboard />} />
           <Route path="/" element={<Register />} />
           <Route path="/add-recipe" element={<AddRecipe />} />
+          <Route path="/dishespage" element={<DishesPage />} />
+          <Route path="/dish/:id" element={<DishDetailsPage />} />
         </Routes>
       </div>
     </Router>
