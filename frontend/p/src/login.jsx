@@ -21,7 +21,7 @@ function Login() {
       if (userType === 'chef') {
         navigate('/chef'); // Navigate to the chef dashboard
       } else {
-        navigate('/dashboard'); // Navigate to the customer dashboard
+        navigate('/dishespage'); // Navigate to the customer dashboard
       }
     } catch (error) {
       console.error('Login error:', error);

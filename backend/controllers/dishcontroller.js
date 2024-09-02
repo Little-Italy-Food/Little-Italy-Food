@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 
 exports.addDish = async (req, res) => {
   try {
-    const { title, description, category, ingredients, price, chefId } = req.body;
+    const { title, description, category, ingredients, price,imageUrl, chefId } = req.body;
     
     if (!mongoose.Types.ObjectId.isValid(chefId)) {
       return res.status(400).json({ error: "Invalid chefId format" });
     }
 
-    const newDish = new Dish({ title, description, category, ingredients, price, chefId });
+    const newDish = new Dish({ title, description, category, ingredients, price,imageUrl, chefId });
     await newDish.save();
     res.status(201).json(newDish);
   } catch (error) {
