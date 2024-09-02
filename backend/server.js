@@ -19,7 +19,10 @@ mongoose.connect('mongodb+srv://bn7bkn:dZj6eiruj3JnznzO@attout.n2ukx.mongodb.net
 
 app.use('/api/users', require('./routes/usersroutes'));
 app.use('/api/dishes', require('./routes/dishroutes'));
+app.use('/api/dishescategory', require('./routes/dishescategoryroutes'));
 app.use('/api/recipes', require('./routes/reciperoutes'));
+app.use('/api/comments', require('./routes/commentsroutes'));
+
 
 
 

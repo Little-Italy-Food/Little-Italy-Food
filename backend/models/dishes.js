@@ -7,7 +7,8 @@ const dishesSchema = new mongoose.Schema({
   category: { type: String, required: true },
   ingredients: { type: String, required: true },
   price: { type: String, required: true },
+  imageUrl: { type: String }, // Added image URL field
   isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Dishes', dishesSchema, 'dishes'); 
+module.exports = mongoose.model('Dishes', dishesSchema, 'dishes');

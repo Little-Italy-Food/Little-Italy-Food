@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function ChefDashboard() {
   const [items, setItems] = useState([]);
-  const [newItem, setNewItem] = useState({ title: '', description: '', category: '', ingredients: '', price: '', instructions: '', cooktime: '' });
+  const [newItem, setNewItem] = useState({ title: '', description: '', category: '', ingredients: '', price: '', instructions: '', cooktime: '', imageUrl: '' }); // Added imageUrl field
   const [chefId] = useState(localStorage.getItem('userId'));
   const [isEditing, setIsEditing] = useState(null);
   const [showDishes, setShowDishes] = useState(true);
@@ -28,7 +28,7 @@ function ChefDashboard() {
       await axios.post(`http://localhost:5001/api/${showDishes ? 'dishes' : 'recipes'}`, { ...newItem, chefId });
     }
     fetchItems();
-    setNewItem({ title: '', description: '', category: '', ingredients: '', price: '', instructions: '', cooktime: '' });
+    setNewItem({ title: '', description: '', category: '', ingredients: '', price: '', instructions: '', cooktime: '', imageUrl: '' }); // Added imageUrl field
   };
 
   const handleEdit = (item) => {
@@ -85,9 +85,14 @@ function ChefDashboard() {
             <input type="text" placeholder="Ingredients" value={newItem.ingredients} onChange={(e) => setNewItem({ ...newItem, ingredients: e.target.value })} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
           </div>
           {showDishes ? (
-            <div className="mb-4">
-              <input type="text" placeholder="Price" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
+            <>
+              <div className="mb-4">
+                <input type="text" placeholder="Price" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+              </div>
+              <div className="mb-4">
+                <input type="text" placeholder="Image URL" value={newItem.imageUrl} onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+              </div>
+            </>
           ) : (
             <>
               <div className="mb-4">
@@ -107,13 +112,21 @@ function ChefDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((item) => (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden">
+              {item.imageUrl && (
+                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${item.imageUrl})` }} />
+              )}
               <div className="p-4">
                 <h3 className="font-bold text-xl mb-2">{item.title}</h3>
                 <p className="text-gray-700 text-base mb-2">{item.description}</p>
                 <p className="text-gray-600 text-sm mb-2">Category: {item.category}</p>
                 <p className="text-gray-600 text-sm mb-2">Ingredients: {item.ingredients}</p>
                 {showDishes ? (
-                  <p className="text-gray-600 text-sm">Price: {item.price}</p>
+                  <>
+                    <p className="text-gray-600 text-sm">Price: {item.price}</p>
+                    {item.imageUrl && (
+                      <p className="text-gray-600 text-sm">Image URL: {item.imageUrl}</p>
+                    )}
+                  </>
                 ) : (
                   <>
                     <p className="text-gray-600 text-sm mb-2">Instructions: {item.instructions}</p>
