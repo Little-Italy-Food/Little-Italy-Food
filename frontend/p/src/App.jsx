@@ -9,8 +9,9 @@ import DishesPage from './dishespage';
 import DishDetailsPage from './dishdetailspage';
 import Cart from './cart';
 import Checkout from './checkout';
-import Navbar from './navbar';
 import OrderConfirmation from './orderconfirmation';
+import AddRecipe from "./pages/AddRecipe";
+import RecipeCards from "./pages/ricipe-listin";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
               <Route path="/dish/:id" element={<DishDetailsPage />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/recipes" element={<RecipeCards />} />
+<Route path="/add-recipe" element={<AddRecipe />} />      
               <Route path="/order-confirmation" element={<OrderConfirmation />} />
             </Routes>
           </div>
