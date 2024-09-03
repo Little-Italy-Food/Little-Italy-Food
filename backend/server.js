@@ -14,18 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-<<<<<<< HEAD
-//contact
-app.use("/api/", contact);
-
-
-mongoose.connect('mongodb+srv://bn7bkn:dZj6eiruj3JnznzO@attout.n2ukx.mongodb.net/littleItaly?retryWrites=true&w=majority&appName=attout', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
-=======
 mongoose
   .connect(
     "mongodb+srv://bn7bkn:dZj6eiruj3JnznzO@attout.n2ukx.mongodb.net/littleItaly?retryWrites=true&w=majority&appName=attout",
@@ -36,8 +24,9 @@ mongoose
   )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
->>>>>>> f693542262cb83f2fa412f7a2b17b5baffe26a62
 
+  //contact
+app.use("/api/", contact);
 app.use('/api/users', require('./routes/usersroutes'));
 app.use('/api/dishes', require('./routes/dishroutes'));
 app.use('/api/dishescategory', require('./routes/dishescategoryroutes'));
