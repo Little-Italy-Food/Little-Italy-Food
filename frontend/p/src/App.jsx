@@ -13,6 +13,7 @@ import OrderConfirmation from './orderconfirmation';
 import AddRecipe from "./pages/AddRecipe";
 import Home from "./Home/Home";
 import RecipeCards from "./pages/ricipe-listin";
+import ContactUs from './contact/contact';
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/add-recipe" element={<AddRecipe />} />      
               <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path='/contact' element={<ContactUs/ >}/>
+
             </Routes>
           </div>
         </Router>
