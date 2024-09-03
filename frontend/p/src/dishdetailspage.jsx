@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, Link , useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Pizza, Euro, User, Send, MessageSquare } from 'lucide-react';
+import { Pizza, Euro, User, Send, MessageSquare, Star, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { CartContext } from './cartcontext';
+import Navbar from './navbar';
 
 const DishDetailsPage = () => {
   const { id } = useParams();
@@ -14,6 +16,12 @@ const DishDetailsPage = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [loginPrompt, setLoginPrompt] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,6 +35,7 @@ const DishDetailsPage = () => {
         const response = await axios.get(`http://localhost:5001/api/dishescategory/${id}`);
         setDish(response.data);
         await fetchComments();
+        await fetchRatings();
         setLoading(false);
       } catch (err) {
         console.error('Error fetching dish details:', err);
@@ -45,6 +54,18 @@ const DishDetailsPage = () => {
     } catch (err) {
       console.error('Error fetching comments:', err);
       setError('Error fetching comments. Please try again later.');
+    }
+  };
+
+  const fetchRatings = async () => {
+    try {
+      const ratingsResponse = await axios.get(`http://localhost:5001/api/ratings/dish/${id}`);
+      const { averageRating, totalRatings, userRating } = ratingsResponse.data;
+      setAverageRating(averageRating);
+      setTotalRatings(totalRatings);
+      if (userRating) setUserRating(userRating);
+    } catch (err) {
+      console.error('Error fetching ratings:', err);
     }
   };
 
@@ -91,6 +112,65 @@ const DishDetailsPage = () => {
     }
   };
 
+  const handleRatingSubmit = async (rating) => {
+    if (!user) {
+      setLoginPrompt(true);
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found in localStorage');
+        setLoginPrompt(true);
+        return;
+      }
+  
+      const response = await axios.post(
+        `http://localhost:5001/api/ratings`,
+        {
+          dishId: id,
+          rating
+        },
+        {
+          headers: { 'x-auth-token': token }
+        }
+      );
+  
+      console.log('Rating submission response:', response.data);
+      setUserRating(rating);
+      await fetchRatings();
+    } catch (err) {
+      console.error('Error submitting rating:', err.response ? err.response.data : err.message);
+      if (err.response && err.response.status === 401) {
+        console.error('Authentication failed. Token may be invalid or expired.');
+        setLoginPrompt(true);
+      }
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (dish) {
+      addToCart({ ...dish, quantity });
+      setQuantity(1); // Reset quantity after adding to cart
+      navigate('/cart'); // Navigate to the cart page
+    }
+  };
+  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  
+  const renderStars = (rating, onStarClick = null) => {
+    return [1, 2, 3, 4, 5].map((star) => (
+      <Star
+        key={star}
+        size={24}
+        fill={star <= rating ? "#FFD700" : "none"}
+        stroke={star <= rating ? "#FFD700" : "#CBD5E0"}
+        className={onStarClick ? "cursor-pointer" : ""}
+        onClick={() => onStarClick && onStarClick(star)}
+      />
+    ));
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading dish details...</div>;
   }
@@ -98,9 +178,9 @@ const DishDetailsPage = () => {
   if (error) {
     return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 via-white to-red-100 py-8">
+        <Navbar></Navbar>
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-lg shadow-xl overflow-hidden border-2 border-green-200">
           <div className="relative h-64 sm:h-80 lg:h-96">
@@ -110,6 +190,13 @@ const DishDetailsPage = () => {
             </div>
           </div>
           <div className="p-6">
+            <div className="flex items-center mb-4">
+              <div className="flex items-center mr-4">
+                {renderStars(averageRating)}
+              </div>
+              <span className="text-lg font-semibold">{averageRating.toFixed(1)}</span>
+              <span className="text-sm text-gray-500 ml-2">({totalRatings} ratings)</span>
+            </div>
             <p className="text-xl text-gray-700 mb-4 italic">{dish.description}</p>
             <div className="flex items-center mb-4">
               <Pizza className="w-6 h-6 text-yellow-500 mr-2" />
@@ -122,6 +209,40 @@ const DishDetailsPage = () => {
             <div className="bg-red-500 text-white px-3 py-1 rounded-full inline-block">
               {dish.category}
             </div>
+          </div>
+          {user && (
+            <div className="p-6 bg-gray-50">
+              <h3 className="text-lg font-semibold mb-2">Your Rating</h3>
+              <div className="flex items-center">
+                {renderStars(userRating, handleRatingSubmit)}
+                {userRating > 0 && (
+                  <span className="ml-2 text-sm text-gray-500">
+                    Your rating: {userRating}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 p-6 bg-white rounded-lg shadow-xl border-2 border-green-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <button onClick={decrementQuantity} className="bg-gray-200 p-2 rounded-l">
+                <Minus size={18} />
+              </button>
+              <span className="px-4 py-2 bg-gray-100">{quantity}</span>
+              <button onClick={incrementQuantity} className="bg-gray-200 p-2 rounded-r">
+                <Plus size={18} />
+              </button>
+            </div>
+            <button
+              onClick={handleAddToCart}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
+            >
+              <ShoppingCart className="mr-2" size={18} />
+              Add to Cart
+            </button>
           </div>
         </div>
 
@@ -197,7 +318,7 @@ const DishDetailsPage = () => {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Aggiungi un commento..."
+              placeholder="Add a comment..."
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               rows="3"
             ></textarea>
@@ -211,8 +332,8 @@ const DishDetailsPage = () => {
           </form>
           {loginPrompt && (
             <div className="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
-              <p className="font-bold">Attenzione!</p>
-              <p>Devi effettuare l'accesso per lasciare un commento o una risposta. <a href="/login" className="text-blue-500 hover:underline">Accedi qui</a>.</p>
+              <p className="font-bold">Attention!</p>
+              <p>You must be logged in to leave a comment or reply. <Link to="/login" className="text-blue-500 hover:underline">Log in here</Link>.</p>
             </div>
           )}
         </div>
@@ -222,3 +343,10 @@ const DishDetailsPage = () => {
 };
 
 export default DishDetailsPage;
+
+
+
+
+
+
+  
