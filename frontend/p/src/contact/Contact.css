@@ -1,14 +1,14 @@
 /* Ensure the background image and container cover the entire viewport */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: 'Arial', sans-serif; /* Add a professional font */
-  overflow: hidden; /* Prevent any accidental scrolling */
+  font-family: "Arial", sans-serif; /* Add a professional font */
 }
 
 .contact-form-container {
-  background-image: url('../assets/contactPic.jpg');
+  background-image: url("../assets/contactPic.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -54,7 +54,12 @@ body, html {
 
 .contact-form-input,
 .contact-form-textarea {
-  background: rgba(255, 255, 255, 0.9); /* Slightly less transparent for better readability */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Slightly less transparent for better readability */
   border: none;
   border-radius: 10px;
   padding: 15px;

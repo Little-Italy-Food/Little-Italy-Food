@@ -5,6 +5,7 @@ const ingredientSchema = new mongoose.Schema({
   quantity: Number,
   unit: String,
   alternative: String,
+  ingredientsName: String,
 });
 
 const nutritionSchema = new mongoose.Schema({
@@ -37,11 +38,15 @@ const recipeSchema = new mongoose.Schema({
   dietaryRestrictions: String,
   chefId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Users",
+    ref: "Chefs",
     required: true,
   },
   rating: { type: Number, default: 0 },
   isDeleted: { type: Boolean, default: false },
+  approved: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);
