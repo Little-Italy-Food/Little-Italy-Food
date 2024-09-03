@@ -1,27 +1,37 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { CartProvider } from './cartcontext';
-import Login from '../src/login';
-import Register from '../src/register';
-import ChefDashboard from './chefdashboard';
-import DishesPage from './dishespage';
-import DishDetailsPage from './dishdetailspage';
-import Cart from './cart';
-import Checkout from './checkout';
-import OrderConfirmation from './orderconfirmation';
+import { CartProvider } from "./cartcontext";
+import Login from "../src/login";
+import Register from "../src/register";
+import ChefDashboard from "./chefdashboard";
+import DishesPage from "./dishespage";
+import DishDetailsPage from "./dishdetailspage";
+import Cart from "./cart";
+import Checkout from "./checkout";
+import OrderConfirmation from "./orderconfirmation";
 import AddRecipe from "./pages/AddRecipe";
 import Home from "./Home/Home";
 import RecipeCards from "./pages/ricipe-listin";
-import ContactUs from './contact/contact';
+import ContactUs from "./contact/contact";
+import RecipeDetailspage from "./pages/RecipeDetailspage";
 
 function App() {
   return (
-    <PayPalScriptProvider options={{ "client-id": "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1" }}>
+    <PayPalScriptProvider
+      options={{
+        "client-id":
+          "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1",
+      }}
+    >
       <CartProvider>
         <Router>
           <div className="min-h-screen bg-gray-100">
-         
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/chef" element={<ChefDashboard />} />
@@ -32,10 +42,13 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/recipes" element={<RecipeCards />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/add-recipe" element={<AddRecipe />} />      
-              <Route path="/order-confirmation" element={<OrderConfirmation />} />
-              <Route path='/contact' element={<ContactUs/ >}/>
-
+              <Route path="/add-recipe" element={<AddRecipe />} />
+              <Route
+                path="/order-confirmation"
+                element={<OrderConfirmation />}
+              />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/recipe/:id" element={<RecipeDetailspage />} />
             </Routes>
           </div>
         </Router>
