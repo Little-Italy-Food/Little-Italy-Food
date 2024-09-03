@@ -1,13 +1,21 @@
-export default function RecipeCard({ recipe }) {
+// RecipeCard.js
+import React from "react";
+
+const baseURL = "http://localhost:5001/";
+
+const RecipeCard = ({ recipe }) => {
+  console.log(recipe);
+  if (!recipe) return null; // Check if recipe exists
+
+  const mainImageUrl = `${baseURL}${recipe.mainImage}`;
+  console.log(mainImageUrl);
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105 cursor-pointer">
-      <div className="p-4">
-        <h3 className="font-bold text-lg text-gray-800">{recipe.name}</h3>
-        <p className="text-sm text-gray-600">{recipe.description}</p>
-      </div>
-      <div className="bg-gray-100 p-2 text-right">
-        <button className="text-blue-500 font-medium">View Recipe</button>
-      </div>
+    <div className="recipe-card">
+      <h2>{recipe.name}</h2>
+      <p>{recipe.briefDescription}</p>
+      <img src={mainImageUrl} alt={recipe.name} />
     </div>
   );
-}
+};
+
+export default RecipeCard;

@@ -19,5 +19,6 @@ router.post(
 router.get("/by-chef", recipeController.getRecipesByChef);
 router.put("/:recipeId", recipeController.updateRecipe);
 router.delete("/:recipeId", recipeController.deleteRecipe);
+router.get("/recipes-get", recipeController.getAllRecipes);
 
 module.exports = router;

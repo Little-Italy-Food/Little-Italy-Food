@@ -40,6 +40,8 @@ const recipeSchema = new mongoose.Schema({
     ref: "Users",
     required: true,
   },
+  rating: { type: Number, default: 0 },
+  isDeleted: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);

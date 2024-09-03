@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const RecipeForm = () => {
+const RecipeForm = ({ onAddRecipe }) => {
   const [ingredients, setIngredients] = useState([
     { type: "", quantity: "", unit: "", alternative: "" },
   ]);
@@ -131,7 +131,36 @@ const RecipeForm = () => {
           },
         }
       );
+      onAddRecipe(response.data.recipe); // Pass the new recipe data back to the parent component
       alert(response.data.message);
+
+      // Reset form fields after successful submission
+      setFormData({
+        name: "",
+        servings: "",
+        briefDescription: "",
+        comprehensiveDescription: "",
+        cookingTime: { hours: "", minutes: "" },
+        cuisineType: "",
+        mealType: "",
+        difficulty: "",
+        mealPrepFriendly: false,
+        freezableRecipe: false,
+        dietaryRestrictions: "",
+      });
+      setIngredients([{ type: "", quantity: "", unit: "", alternative: "" }]);
+      setNutritionValues({
+        protein: "",
+        fat: "",
+        carbs: "",
+        calories: "",
+        vitamins: "",
+      });
+      setFiles({
+        mainImage: null,
+        subImages: [],
+        video: null,
+      });
     } catch (error) {
       console.error("Error creating recipe:", error);
       alert("Error creating recipe. Please check the console for details.");

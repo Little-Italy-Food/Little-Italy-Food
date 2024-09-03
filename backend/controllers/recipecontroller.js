@@ -127,3 +127,105 @@ exports.deleteRecipe = async (req, res) => {
   await Recipe.findByIdAndUpdate(recipeId, { isDeleted: true });
   res.json({ msg: "Recipe deleted successfully" });
 };
+
+exports.getAllRecipes = async (req, res) => {
+  try {
+    // Get filter parameters from query
+    const {
+      cookingTime,
+      numberOfIngredients,
+      dietaryPreferences,
+      mealType,
+      cuisineType,
+      mealPrepFriendly,
+      freezableRecipe,
+    } = req.query;
+
+    // Build the query object
+    let query = { isDeleted: false };
+
+    console.log("Query Parameters:", req.query); // Debugging statement
+
+    // Handle cookingTime filtering
+    if (cookingTime) {
+      const [minMinutes, maxMinutes] = cookingTime.split(",").map(Number);
+      query["$expr"] = {
+        $and: [
+          {
+            $gte: [
+              {
+                $add: [
+                  { $multiply: ["$cookingTime.hours", 60] },
+                  "$cookingTime.minutes",
+                ],
+              },
+              minMinutes,
+            ],
+          },
+          {
+            $lte: [
+              {
+                $add: [
+                  { $multiply: ["$cookingTime.hours", 60] },
+                  "$cookingTime.minutes",
+                ],
+              },
+              maxMinutes,
+            ],
+          },
+        ],
+      };
+    }
+
+    // Handle numberOfIngredients filtering
+    if (numberOfIngredients) {
+      query["$expr"] = {
+        ...query["$expr"],
+        $gte: [{ $size: "$ingredients" }, Number(numberOfIngredients)],
+      };
+    }
+
+    // Handle dietaryPreferences filtering
+    if (dietaryPreferences) {
+      query.dietaryRestrictions = dietaryPreferences;
+    }
+
+    // Handle mealType filtering
+    if (mealType) {
+      console.log("MealType Value:", mealType); // Debugging statement
+      query.mealType = new RegExp(`^${mealType.trim()}$`, "i"); // Case-insensitive exact match
+    }
+
+    // Handle cuisineType filtering
+    if (cuisineType) {
+      query.cuisineType = cuisineType;
+    }
+
+    // Handle boolean filters
+    if (mealPrepFriendly !== undefined) {
+      query.mealPrepFriendly = mealPrepFriendly === "true";
+    }
+
+    if (freezableRecipe !== undefined) {
+      query.freezableRecipe = freezableRecipe === "true";
+    }
+
+    console.log("Constructed Query:", JSON.stringify(query, null, 2)); // Improved debugging statement
+
+    // Fetch recipes based on the query object with all fields
+    const recipes = await Recipe.find(query);
+
+    console.log("Recipes Found:", recipes); // Debugging statement
+
+    if (recipes.length === 0) {
+      return res.status(404).json({ message: "No recipes found." });
+    }
+
+    res.json(recipes);
+  } catch (error) {
+    console.error("Error fetching recipes:", error); // Log the error for debugging
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching recipes." });
+  }
+};
