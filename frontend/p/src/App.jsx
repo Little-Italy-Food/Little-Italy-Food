@@ -1,26 +1,38 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { CartProvider } from './cartcontext';
 import Login from '../src/login';
 import Register from '../src/register';
 import ChefDashboard from './chefdashboard';
 import DishesPage from './dishespage';
 import DishDetailsPage from './dishdetailspage';
-
+import Cart from './cart';
+import Checkout from './checkout';
+import Navbar from './navbar';
+import OrderConfirmation from './orderconfirmation';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/chef" element={<ChefDashboard />} />
-          <Route path="/" element={<Register />} />
-          <Route path="/dishespage" element={<DishesPage />} />
-          <Route path="/dish/:id" element={<DishDetailsPage />} />
-          
-        </Routes>
-      </div>
-    </Router>
+    <PayPalScriptProvider options={{ "client-id": "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1" }}>
+      <CartProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-100">
+         
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/chef" element={<ChefDashboard />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dishespage" element={<DishesPage />} />
+              <Route path="/dish/:id" element={<DishDetailsPage />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            </Routes>
+          </div>
+        </Router>
+      </CartProvider>
+    </PayPalScriptProvider>
   );
 }
 

@@ -22,6 +22,9 @@ app.use('/api/dishes', require('./routes/dishroutes'));
 app.use('/api/dishescategory', require('./routes/dishescategoryroutes'));
 app.use('/api/recipes', require('./routes/reciperoutes'));
 app.use('/api/comments', require('./routes/commentsroutes'));
+app.use('/api/ratings', require('./routes/ratingsroutes'));
+app.use('/api/orders', require('./routes/ordersroutes'));
+app.use('/api/discounts', require('./routes/discountroutes'));
 
 
 
