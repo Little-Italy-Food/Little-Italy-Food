@@ -10,7 +10,8 @@ import Register from "../src/register";
 import ChefDashboard from "./chefdashboard";
 import DishesPage from "./dishespage";
 import DishDetailsPage from "./dishdetailspage";
-
+import AddRecipe from "./pages/AddRecipe";
+import RecipeCards from "./pages/ricipe-listin";
 function App() {
   return (
     <Router>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/add-recipe" element={<AddRecipe />} />
           <Route path="/dishespage" element={<DishesPage />} />
           <Route path="/dish/:id" element={<DishDetailsPage />} />
+          <Route path="/recipes" element={<RecipeCards />} />
         </Routes>
       </div>
     </Router>
