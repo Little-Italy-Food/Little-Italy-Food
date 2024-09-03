@@ -1,15 +1,23 @@
-const express = require('express');
+// backend/routes/reciperoutes.js
+const express = require("express");
 const router = express.Router();
-const {
-  addRecipe,
-  getRecipesByChef,
-  updateRecipe,
-  deleteRecipe,
-} = require('../controllers/recipecontroller');
+const upload = require("../middlewares/upload"); // Import the upload middleware
+const recipeController = require("../controllers/recipecontroller");
 
-router.post('/', addRecipe);
-router.get('/:chefId', getRecipesByChef);
-router.put('/:recipeId', updateRecipe);
-router.delete('/:recipeId', deleteRecipe);
+// Route to handle recipe creation with file uploads
+router.post(
+  "/recipes",
+  upload.fields([
+    { name: "mainImage", maxCount: 1 },
+    { name: "subImages", maxCount: 4 },
+    { name: "video", maxCount: 1 },
+  ]),
+  recipeController.createRecipe
+);
+
+// Other routes
+router.get("/by-chef", recipeController.getRecipesByChef);
+router.put("/:recipeId", recipeController.updateRecipe);
+router.delete("/:recipeId", recipeController.deleteRecipe);
 
 module.exports = router;
