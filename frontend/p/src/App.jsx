@@ -10,12 +10,15 @@ import Register from "../src/register";
 import ChefDashboard from "./chefdashboard";
 import DishesPage from "./dishespage";
 import DishDetailsPage from "./dishdetailspage";
+import AddRecipe from "../src/components/RecipeForm";
+import Home from "./Home/Home";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
         <Routes>
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/chef" element={<ChefDashboard />} />
           <Route path="/" element={<Register />} />
