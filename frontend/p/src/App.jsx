@@ -11,6 +11,7 @@ import Cart from './cart';
 import Checkout from './checkout';
 import OrderConfirmation from './orderconfirmation';
 import AddRecipe from "./pages/AddRecipe";
+import Home from "./Home/Home";
 import RecipeCards from "./pages/ricipe-listin";
 
 function App() {
@@ -29,7 +30,8 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/recipes" element={<RecipeCards />} />
-<Route path="/add-recipe" element={<AddRecipe />} />      
+              <Route path="/home" element={<Home />} />
+              <Route path="/add-recipe" element={<AddRecipe />} />      
               <Route path="/order-confirmation" element={<OrderConfirmation />} />
             </Routes>
           </div>
