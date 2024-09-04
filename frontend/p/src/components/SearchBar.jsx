@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, onVoiceSearch }) => {
   return (
     <div className="flex items-center mb-4">
       <input
@@ -11,7 +11,7 @@ const SearchBar = ({ onSearch }) => {
       />
       <button
         className="bg-blue-500 text-white p-2 rounded-r-lg"
-        onClick={() => alert("Voice Search Activated")}
+        onClick={onVoiceSearch}
       >
         🎙️
       </button>

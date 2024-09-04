@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken"); // Make sure jwt is required at the top of your file
-const Recipe = require("../models/recipes"); // Ensure Recipe model is imported
+const jwt = require("jsonwebtoken");
+const Recipe = require("../models/recipes");
 const mongoose = require("mongoose");
 
 // Create a new recipe
@@ -130,23 +130,23 @@ exports.deleteRecipe = async (req, res) => {
 
 exports.getAllRecipes = async (req, res) => {
   try {
-    // Get filter parameters from query
     const {
       cookingTime,
       numberOfIngredients,
-      dietaryPreferences,
+      dietaryRestrictions,
       mealType,
       cuisineType,
       mealPrepFriendly,
       freezableRecipe,
+      sortBy,
+      sortOrder,
+      page = 1,
+      search = "",
+      difficulty,
     } = req.query;
 
-    // Build the query object
     let query = { isDeleted: false };
 
-    console.log("Query Parameters:", req.query); // Debugging statement
-
-    // Handle cookingTime filtering
     if (cookingTime) {
       const [minMinutes, maxMinutes] = cookingTime.split(",").map(Number);
       query["$expr"] = {
@@ -177,31 +177,29 @@ exports.getAllRecipes = async (req, res) => {
       };
     }
 
-    // Handle numberOfIngredients filtering
     if (numberOfIngredients) {
+      const numIngredients = Number(numberOfIngredients);
       query["$expr"] = {
         ...query["$expr"],
-        $gte: [{ $size: "$ingredients" }, Number(numberOfIngredients)],
+        $gte: [{ $size: "$ingredients" }, numIngredients],
       };
     }
 
-    // Handle dietaryPreferences filtering
-    if (dietaryPreferences) {
-      query.dietaryRestrictions = dietaryPreferences;
+    if (dietaryRestrictions) {
+      const restrictions = dietaryRestrictions
+        .split(",")
+        .map((item) => item.trim());
+      query.dietaryRestrictions = { $in: restrictions };
     }
 
-    // Handle mealType filtering
     if (mealType) {
-      console.log("MealType Value:", mealType); // Debugging statement
-      query.mealType = new RegExp(`^${mealType.trim()}$`, "i"); // Case-insensitive exact match
+      query.mealType = new RegExp(`^${mealType.trim()}$`, "i");
     }
 
-    // Handle cuisineType filtering
     if (cuisineType) {
       query.cuisineType = cuisineType;
     }
 
-    // Handle boolean filters
     if (mealPrepFriendly !== undefined) {
       query.mealPrepFriendly = mealPrepFriendly === "true";
     }
@@ -210,12 +208,30 @@ exports.getAllRecipes = async (req, res) => {
       query.freezableRecipe = freezableRecipe === "true";
     }
 
-    console.log("Constructed Query:", JSON.stringify(query, null, 2)); // Improved debugging statement
+    if (difficulty) {
+      query.difficulty = difficulty;
+    }
 
-    // Fetch recipes based on the query object with all fields
-    const recipes = await Recipe.find(query);
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      query.$or = [
+        { name: searchRegex },
+        { "ingredients.ingredientsName": searchRegex },
+        { briefDescription: searchRegex },
+        { comprehensiveDescription: searchRegex },
+      ];
+    }
 
-    console.log("Recipes Found:", recipes); // Debugging statement
+    let sort = {};
+    if (sortBy) {
+      const order = sortOrder === "desc" ? -1 : 1;
+      sort[sortBy] = order;
+    }
+
+    const recipes = await Recipe.find(query)
+      .sort(sort)
+      .skip((page - 1) * 6)
+      .limit(6);
 
     if (recipes.length === 0) {
       return res.status(404).json({ message: "No recipes found." });
@@ -223,7 +239,7 @@ exports.getAllRecipes = async (req, res) => {
 
     res.json(recipes);
   } catch (error) {
-    console.error("Error fetching recipes:", error); // Log the error for debugging
+    console.error("Error fetching recipes:", error);
     res
       .status(500)
       .json({ message: "An error occurred while fetching recipes." });
