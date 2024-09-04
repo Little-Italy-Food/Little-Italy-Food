@@ -18,17 +18,16 @@ import OrderConfirmation from "./orderconfirmation";
 import AddRecipe from "./pages/AddRecipe";
 import Home from "./Home/Home";
 import RecipeCards from "./pages/ricipe-listin";
-import ContactUs from "./contact/contact";
-import RecipeDetailspage from "./pages/RecipeDetailspage";
-
+import ContactUs from './contact/contact';
+import { UserProvider } from './usercontext'; 
+import OurChefs from './ourchefs';
+import ChefProfile from './chefprofile';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
-    <PayPalScriptProvider
-      options={{
-        "client-id":
-          "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1",
-      }}
-    >
+    <PayPalScriptProvider options={{ "client-id": "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1" }}>
+      <UserProvider>
       <CartProvider>
         <Router>
           <div className="min-h-screen bg-gray-100">
@@ -42,17 +41,19 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/recipes" element={<RecipeCards />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/add-recipe" element={<AddRecipe />} />
-              <Route
-                path="/order-confirmation"
-                element={<OrderConfirmation />}
-              />
-              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/add-recipe" element={<AddRecipe />} />      
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path='/contact' element={<ContactUs/ >}/>
+              <Route path="/ourchefs" element={<NavbarWrapper><OurChefs /></NavbarWrapper>} />
+              <Route path="/chef/:id" element={<NavbarWrapper><ChefProfile /></NavbarWrapper>} />
               <Route path="/recipe/:id" element={<RecipeDetailspage />} />
+
             </Routes>
+            <ToastContainer />
           </div>
         </Router>
       </CartProvider>
+      </UserProvider>
     </PayPalScriptProvider>
   );
 }
