@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { UserContext } from './usercontext';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ChefProfile = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [chef, setChef] = useState(null);
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +15,7 @@ const ChefProfile = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { user, updateUser, loading: userLoading } = useContext(UserContext);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [currentDishIndex, setCurrentDishIndex] = useState(0);
 
   useEffect(() => {
     const fetchChefAndDishes = async () => {
@@ -25,7 +28,6 @@ const ChefProfile = () => {
         setDishes(dishesResponse.data);
         setLoading(false);
 
-        // Check if user is subscribed to this chef
         if (!userLoading && user && user.subscriptions && user.subscriptions.includes(id)) {
           setIsSubscribed(true);
         }
@@ -53,6 +55,21 @@ const ChefProfile = () => {
       setShowSubscribeModal(false);
     } catch (error) {
       console.error('Subscription error:', error);
+    }
+  };
+
+  const rotateDishes = (direction) => {
+    if (direction === "next") {
+      setCurrentDishIndex((prevIndex) => (prevIndex + 1) % dishes.length);
+    } else {
+      setCurrentDishIndex((prevIndex) => (prevIndex - 1 + dishes.length) % dishes.length);
+    }
+  };
+
+  const navigateToDishDetails = () => {
+    const currentDish = dishes[currentDishIndex];
+    if (currentDish && currentDish._id) {
+      navigate(`/dish/${currentDish._id}`);
     }
   };
 
@@ -93,34 +110,67 @@ const ChefProfile = () => {
           </div>
         </div>
 
-        {/* Chef's dishes section */}
+        {/* Chef's dishes section with new design */}
         <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-800">Chef's Signature Dishes</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {dishes.map((dish) => (
-            <Link
-              key={dish._id}
-              to={`/dish/${dish._id}`}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-500 hover:scale-105"
+        <div className="flex items-center justify-between p-8 bg-[#FDF6F0] rounded-lg shadow-lg">
+          <div className="w-1/2">
+            <h2 className="text-4xl font-bold mb-2">
+              ${dishes[currentDishIndex]?.price}
+            </h2>
+            <h3 className="text-2xl font-semibold mb-4">
+              {dishes[currentDishIndex]?.title}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {dishes[currentDishIndex]?.description}
+            </p>
+            <button 
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+              onClick={navigateToDishDetails}
             >
-              <div className="h-48 bg-gray-200">
-                {dish.imageUrl ? (
-                  <img src={dish.imageUrl} alt={dish.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <span className="text-4xl text-gray-400">No Image</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{dish.title}</h3>
-                <p className="text-gray-600 mb-4">{dish.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-green-600 font-bold">${dish.price}</span>
-                  <span className="text-sm text-gray-500">{dish.category}</span>
-                </div>
-              </div>
-            </Link>
-          ))}
+              Dish Details
+            </button>
+          </div>
+          <div className="w-1/2 relative">
+            <div className="w-[400px] h-[400px] mx-auto relative">
+              <img
+                src={dishes[currentDishIndex]?.imageUrl || '/placeholder-image.jpg'}
+                alt={dishes[currentDishIndex]?.title}
+                className="w-64 h-64 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full object-cover shadow-lg"
+              />
+              {dishes.map((dish, index) => {
+                const angle = ((index - currentDishIndex + dishes.length) % dishes.length) * ((2 * Math.PI) / dishes.length);
+                const x = Math.cos(angle) * 180;
+                const y = Math.sin(angle) * 180;
+                return (
+                  <img
+                    key={index}
+                    src={dish.imageUrl || '/placeholder-image.jpg'}
+                    alt={dish.title}
+                    className={`w-20 h-20 rounded-full absolute object-cover transition-all duration-300 shadow-md ${
+                      index === currentDishIndex ? "opacity-0" : "opacity-70 hover:opacity-100 hover:scale-110"
+                    }`}
+                    style={{
+                      transform: `translate(${x}px, ${y}px)`,
+                      top: "calc(50% - 10px)",
+                      left: "calc(50% - 10px)",
+                    }}
+                  />
+                );
+              })}
+            </div>
+            <button
+              onClick={() => rotateDishes("prev")}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={() => rotateDishes("next")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
         </div>
       </div>
 
