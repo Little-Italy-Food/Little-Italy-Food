@@ -37,10 +37,9 @@ function ChefDashboard() {
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      setItems(response.data || []); // Ensure items is always an array
+      setItems(response.data);
     } catch (error) {
       console.error("Error fetching items:", error);
-      setItems([]); // Set to empty array on error
     }
   };
 
@@ -88,11 +87,6 @@ function ChefDashboard() {
       console.error("Error deleting item:", error);
     }
   };
-
-  const handleAddRecipe = (newRecipe) => {
-    setItems((prevItems) => [...prevItems, newRecipe]);
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-6xl mx-auto">
@@ -123,110 +117,100 @@ function ChefDashboard() {
           </button>
         </div>
         {activeTab === "dishes" && (
-          <>
-            <form
-              onSubmit={handleSubmit}
-              className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          >
+            <h2 className="text-2xl font-semibold mb-4">
+              {isEditing ? "Edit" : "Add"} Dish
+            </h2>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Title"
+                value={newItem.title}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, title: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="mb-4">
+              <textarea
+                placeholder="Description"
+                value={newItem.description}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, description: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Category"
+                value={newItem.category}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, category: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Ingredients"
+                value={newItem.ingredients}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, ingredients: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Price"
+                value={newItem.price}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, price: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Image URL"
+                value={newItem.imageUrl}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, imageUrl: e.target.value })
+                }
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              <h2 className="text-2xl font-semibold mb-4">
-                {isEditing ? "Edit" : "Add"} Dish
-              </h2>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={newItem.title}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, title: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-4">
-                <textarea
-                  placeholder="Description"
-                  value={newItem.description}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, description: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24"
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Category"
-                  value={newItem.category}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, category: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Ingredients"
-                  value={newItem.ingredients}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, ingredients: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Price"
-                  value={newItem.price}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, price: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Image URL"
-                  value={newItem.imageUrl}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, imageUrl: e.target.value })
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                {isEditing ? "Update" : "Add"} Dish
-              </button>
-            </form>
-            {items.length > 0 ? (
-              <DishesList
-                items={items}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-              />
-            ) : (
-              <p className="text-center text-gray-600">No dishes available.</p>
-            )}
-          </>
+              {isEditing ? "Update" : "Add"} Dish
+            </button>
+          </form>
         )}
-        {activeTab === "recipe" && (
-          <>
-            <RecipeForm onAddRecipe={handleAddRecipe} />
-            {items.length > 0 ? (
-              <RecipesList
-                items={items}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-              />
-            ) : (
-              <p className="text-center text-gray-600">No recipes available.</p>
-            )}
-          </>
+        {activeTab === "recipe" && <RecipeForm />}
+        {activeTab === "dishes" ? (
+          <DishesList
+            items={items}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        ) : (
+          <RecipesList
+            items={items}
+            setItems={setItems}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         )}
       </div>
     </div>

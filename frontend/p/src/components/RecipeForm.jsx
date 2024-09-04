@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const RecipeForm = ({ onAddRecipe }) => {
+const RecipeForm = () => {
   const [ingredients, setIngredients] = useState([
-    { type: "", quantity: "", unit: "", alternative: "" },
+    { type: "", quantity: "", unit: "", alternative: "", ingredientsName: "" },
   ]);
 
   const [nutritionValues, setNutritionValues] = useState({
@@ -37,7 +37,13 @@ const RecipeForm = ({ onAddRecipe }) => {
   const addIngredient = () => {
     setIngredients([
       ...ingredients,
-      { type: "", quantity: "", unit: "", alternative: "" },
+      {
+        type: "",
+        quantity: "",
+        unit: "",
+        alternative: "",
+        ingredientsName: "",
+      },
     ]);
   };
 
@@ -131,36 +137,7 @@ const RecipeForm = ({ onAddRecipe }) => {
           },
         }
       );
-      onAddRecipe(response.data.recipe); // Pass the new recipe data back to the parent component
       alert(response.data.message);
-
-      // Reset form fields after successful submission
-      setFormData({
-        name: "",
-        servings: "",
-        briefDescription: "",
-        comprehensiveDescription: "",
-        cookingTime: { hours: "", minutes: "" },
-        cuisineType: "",
-        mealType: "",
-        difficulty: "",
-        mealPrepFriendly: false,
-        freezableRecipe: false,
-        dietaryRestrictions: "",
-      });
-      setIngredients([{ type: "", quantity: "", unit: "", alternative: "" }]);
-      setNutritionValues({
-        protein: "",
-        fat: "",
-        carbs: "",
-        calories: "",
-        vitamins: "",
-      });
-      setFiles({
-        mainImage: null,
-        subImages: [],
-        video: null,
-      });
     } catch (error) {
       console.error("Error creating recipe:", error);
       alert("Error creating recipe. Please check the console for details.");
@@ -207,7 +184,19 @@ const RecipeForm = ({ onAddRecipe }) => {
           Ingredients
         </label>
         {ingredients.map((ingredient, index) => (
-          <div key={index} className="mb-4 grid grid-cols-3 gap-4">
+          <div key={index} className="mb-4 grid grid-cols-4 gap-4">
+            {/* Ingredient Name */}
+            <input
+              type="text"
+              className="border rounded px-3 py-2"
+              placeholder="Ingredient Name"
+              value={ingredient.ingredientsName}
+              onChange={(e) =>
+                handleIngredientChange(index, "ingredientsName", e.target.value)
+              }
+            />
+
+            {/* Ingredient Type */}
             <select
               className="border rounded px-3 py-2"
               value={ingredient.type}
@@ -223,6 +212,7 @@ const RecipeForm = ({ onAddRecipe }) => {
               <option value="grains">Grains</option>
             </select>
 
+            {/* Quantity */}
             <input
               type="number"
               className="border rounded px-3 py-2"
@@ -235,6 +225,7 @@ const RecipeForm = ({ onAddRecipe }) => {
               }
             />
 
+            {/* Unit */}
             <select
               className="border rounded px-3 py-2"
               value={ingredient.unit}
@@ -260,9 +251,10 @@ const RecipeForm = ({ onAddRecipe }) => {
               )}
             </select>
 
+            {/* Alternative Ingredient */}
             <input
               type="text"
-              className="border rounded px-3 py-2 col-span-3"
+              className="border rounded px-3 py-2 col-span-4"
               placeholder="Alternative ingredient (optional)"
               value={ingredient.alternative}
               onChange={(e) =>

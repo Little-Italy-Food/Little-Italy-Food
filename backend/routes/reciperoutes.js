@@ -15,10 +15,21 @@ router.post(
   recipeController.createRecipe
 );
 
+router.put(
+  "/recipes/:recipeId",
+  upload.fields([
+    { name: "mainImage", maxCount: 1 },
+    { name: "subImages", maxCount: 10 },
+    { name: "video", maxCount: 1 },
+  ]),
+  recipeController.updateRecipe
+);
+
 // Other routes
 router.get("/by-chef", recipeController.getRecipesByChef);
 router.put("/:recipeId", recipeController.updateRecipe);
 router.delete("/:recipeId", recipeController.deleteRecipe);
 router.get("/recipes-get", recipeController.getAllRecipes);
+router.delete("/recipes/:recipeId", recipeController.deleteRecipe);
 
 module.exports = router;
