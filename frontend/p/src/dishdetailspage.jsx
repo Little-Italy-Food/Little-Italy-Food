@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link , useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Pizza, Euro, User, Send, MessageSquare, Star, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { Pizza, Euro, User, Send, MessageSquare, Star, ShoppingCart, Plus, Minus, Share2 } from 'lucide-react';
 import { CartContext } from './cartcontext';
 import Navbar from './navbar';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const DishDetailsPage = () => {
   const { id } = useParams();
@@ -22,6 +24,10 @@ const DishDetailsPage = () => {
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
+
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -84,8 +90,10 @@ const DishDetailsPage = () => {
       });
       setComments([response.data, ...comments]);
       setNewComment('');
+      toast.success('Comment added successfully!');
     } catch (err) {
       console.error('Error submitting comment:', err);
+      toast.error('Failed to add comment. Please try again.');
     }
   };
 
@@ -107,8 +115,10 @@ const DishDetailsPage = () => {
       setComments(updatedComments);
       setReplyContent('');
       setReplyingTo(null);
+      toast.success('Reply added successfully!');
     } catch (err) {
       console.error('Error submitting reply:', err);
+      toast.error('Failed to add reply. Please try again.');
     }
   };
 
@@ -139,22 +149,32 @@ const DishDetailsPage = () => {
       console.log('Rating submission response:', response.data);
       setUserRating(rating);
       await fetchRatings();
+      toast.success('Rating submitted successfully!');
     } catch (err) {
       console.error('Error submitting rating:', err.response ? err.response.data : err.message);
       if (err.response && err.response.status === 401) {
         console.error('Authentication failed. Token may be invalid or expired.');
         setLoginPrompt(true);
       }
+      toast.error('Failed to submit rating. Please try again.');
     }
   };
 
   const handleAddToCart = () => {
     if (dish) {
       addToCart({ ...dish, quantity });
-      setQuantity(1); // Reset quantity after adding to cart
-      navigate('/cart'); // Navigate to the cart page
+      setQuantity(1);
+      toast.success('Added to cart successfully!', {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
+
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   
@@ -171,6 +191,48 @@ const DishDetailsPage = () => {
     ));
   };
 
+  const handleShareClick = async () => {
+    setShowShareModal(true);
+    try {
+      const response = await axios.get('http://localhost:5001/api/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Error fetching users. Please try again.', {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  
+  const handleShare = async (receiverId) => {
+    try {
+      await axios.post('http://localhost:5001/api/notifications', {
+        receiverId,
+        dishId: id
+      }, {
+        headers: { 'x-auth-token': localStorage.getItem('token') }
+      });
+      setShowShareModal(false);
+      
+      toast.success(`You've shared ${dish.title} with a user`, {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error('Error sharing dish:', error);
+      toast.error('Error sharing dish. Please try again.', {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  const filteredUsers = users.filter(user => 
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading dish details...</div>;
   }
@@ -178,9 +240,10 @@ const DishDetailsPage = () => {
   if (error) {
     return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 via-white to-red-100 py-8">
-        <Navbar></Navbar>
+      <Navbar />
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-lg shadow-xl overflow-hidden border-2 border-green-200">
           <div className="relative h-64 sm:h-80 lg:h-96">
@@ -243,6 +306,13 @@ const DishDetailsPage = () => {
               <ShoppingCart className="mr-2" size={18} />
               Add to Cart
             </button>
+            <button
+              onClick={handleShareClick}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center ml-4"
+            >
+              <Share2 className="mr-2" size={18} />
+              Share
+            </button>
           </div>
         </div>
 
@@ -277,7 +347,7 @@ const DishDetailsPage = () => {
                   </div>
                 )}
 
-                {user && (replyingTo !== comment._id ? (
+{user && (replyingTo !== comment._id ? (
                   <button
                     onClick={() => setReplyingTo(comment._id)}
                     className="mt-2 text-sm text-green-500 flex items-center"
@@ -338,15 +408,44 @@ const DishDetailsPage = () => {
           )}
         </div>
       </div>
+
+      {showShareModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Share this dish</h3>
+            <input
+              type="text"
+              placeholder="Search users..."
+              className="w-full p-2 mb-4 border rounded"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="max-h-60 overflow-y-auto">
+              {filteredUsers.map(user => (
+                <div key={user._id} className="flex justify-between items-center mb-2">
+                  <span>{user.username}</span>
+                  <button
+                    onClick={() => handleShare(user._id)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                  >
+                    Share
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowShareModal(false)}
+              className="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      <ToastContainer />
     </div>
   );
 };
 
 export default DishDetailsPage;
-
-
-
-
-
-
-  
