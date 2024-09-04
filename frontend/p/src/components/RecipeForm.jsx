@@ -146,7 +146,7 @@ const RecipeForm = () => {
 
   return (
     <form
-      className="p-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto"
+      className="p-6 bg-white shadow-md rounded-lg  "
       onSubmit={handleSubmit}
     >
       {/* Your form fields */}
