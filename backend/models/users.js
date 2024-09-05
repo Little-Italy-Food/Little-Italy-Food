@@ -11,6 +11,8 @@ const usersSchema = new Schema({
       ref: 'Chefs', 
     }
   ],
+  image: { type: String },
+  recentlyViewed: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipes' }],
 });
 
 module.exports = mongoose.model('Users', usersSchema, 'users');
