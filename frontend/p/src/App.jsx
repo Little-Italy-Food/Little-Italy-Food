@@ -18,6 +18,7 @@ function App() {
   return (
     <PayPalScriptProvider options={{ "client-id": "AV02eqe3RJg8sU_mXlo8dKbod7dEscG1WCzeN-tc-qV5eYN9WupElGxlJ4rKtGoYMK9BwbOlOdT34Wb1" }}>
       <CartProvider>
+ 
         <Router>
           <div className="min-h-screen bg-gray-100">
          
