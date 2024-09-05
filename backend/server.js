@@ -37,7 +37,10 @@ app.use('/api/orders', require('./routes/ordersroutes'));
 app.use('/api/discounts', require('./routes/discountroutes'));
 app.use('/api/notifications', require('./routes/notificationroutes'));
 app.use('/api/chefs', require('./routes/chefsroutes'));
+app.use('/api/chefinfo', require('./routes/chefinforoutes'));
 app.use('/api/subscriptions', require('./routes/subscriptionroutes'));
-
+app.use('/api/cheforders', require('./routes/chefordersroutes')); 
+app.use('/api/reports', require('./routes/reportsroutes'));
+app.use('/api/userprofile', require('./routes/userprofileroutes'));
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
