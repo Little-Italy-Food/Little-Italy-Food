@@ -1,13 +1,23 @@
 const Dish = require('../models/dishes');
 
+// exports.getAllDishes = async (req, res) => {
+//   try {
+//     const dishes = await Dish.find({ isDeleted: false });
+//     res.json(dishes);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching dishes', error: error.message });
+//   }
+// };
+/////////////////////////////////
 exports.getAllDishes = async (req, res) => {
   try {
-    const dishes = await Dish.find({ isDeleted: false });
+    const dishes = await Dish.find({ isDeleted: false }).limit(8);
     res.json(dishes);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching dishes', error: error.message });
   }
 };
+///////////////////////////
 
 exports.getDishById = async (req, res) => {
   try {
