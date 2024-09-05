@@ -1,19 +1,24 @@
-import { MicrophoneIcon, SearchIcon } from "@heroicons/react/solid";
+import React from "react";
 
-export default function SearchBar() {
+const SearchBar = ({ onSearch, onVoiceSearch }) => {
   return (
-    <div className="flex items-center space-x-2 mb-4">
-      <input
-        type="text"
-        placeholder="Search recipes..."
-        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-      />
-      <button className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600">
-        <SearchIcon className="h-5 w-5" />
-      </button>
-      <button className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-        <MicrophoneIcon className="h-5 w-5 text-gray-600" />
-      </button>
+    <div className="flex justify-center ml-[30rem] absolute top-[10rem] z-50">
+      <div className="bg-white flex w-[40rem] px-1 py-1 rounded-full border border-green-500 overflow-hidden  font-sans">
+        <input
+          type="text"
+          placeholder="Search for recipes..."
+          className="w-full outline-none bg-white pl-4 text-sm"
+          onChange={(e) => onSearch(e.target.value)}
+        />
+        <button
+          className="bg-green-500 hover:bg-green-600 transition-all text-white text-sm rounded-full px-5 py-2.5"
+          onClick={onVoiceSearch}
+        >
+          🎙️
+        </button>
+      </div>
     </div>
   );
-}
+};
+
+export default SearchBar;

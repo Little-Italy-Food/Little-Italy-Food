@@ -3,7 +3,7 @@ import axios from "axios";
 
 const RecipeForm = () => {
   const [ingredients, setIngredients] = useState([
-    { type: "", quantity: "", unit: "", alternative: "" },
+    { type: "", quantity: "", unit: "", alternative: "", ingredientsName: "" },
   ]);
 
   const [nutritionValues, setNutritionValues] = useState({
@@ -37,7 +37,13 @@ const RecipeForm = () => {
   const addIngredient = () => {
     setIngredients([
       ...ingredients,
-      { type: "", quantity: "", unit: "", alternative: "" },
+      {
+        type: "",
+        quantity: "",
+        unit: "",
+        alternative: "",
+        ingredientsName: "",
+      },
     ]);
   };
 
@@ -140,7 +146,7 @@ const RecipeForm = () => {
 
   return (
     <form
-      className="p-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto"
+      className="p-6 bg-white shadow-md rounded-lg  "
       onSubmit={handleSubmit}
     >
       {/* Your form fields */}
@@ -178,7 +184,19 @@ const RecipeForm = () => {
           Ingredients
         </label>
         {ingredients.map((ingredient, index) => (
-          <div key={index} className="mb-4 grid grid-cols-3 gap-4">
+          <div key={index} className="mb-4 grid grid-cols-4 gap-4">
+            {/* Ingredient Name */}
+            <input
+              type="text"
+              className="border rounded px-3 py-2"
+              placeholder="Ingredient Name"
+              value={ingredient.ingredientsName}
+              onChange={(e) =>
+                handleIngredientChange(index, "ingredientsName", e.target.value)
+              }
+            />
+
+            {/* Ingredient Type */}
             <select
               className="border rounded px-3 py-2"
               value={ingredient.type}
@@ -194,6 +212,7 @@ const RecipeForm = () => {
               <option value="grains">Grains</option>
             </select>
 
+            {/* Quantity */}
             <input
               type="number"
               className="border rounded px-3 py-2"
@@ -206,6 +225,7 @@ const RecipeForm = () => {
               }
             />
 
+            {/* Unit */}
             <select
               className="border rounded px-3 py-2"
               value={ingredient.unit}
@@ -231,9 +251,10 @@ const RecipeForm = () => {
               )}
             </select>
 
+            {/* Alternative Ingredient */}
             <input
               type="text"
-              className="border rounded px-3 py-2 col-span-3"
+              className="border rounded px-3 py-2 col-span-4"
               placeholder="Alternative ingredient (optional)"
               value={ingredient.alternative}
               onChange={(e) =>

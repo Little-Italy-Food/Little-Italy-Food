@@ -1,0 +1,107 @@
+/* Ensure the background image and container cover the entire viewport */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Arial", sans-serif; /* Add a professional font */
+}
+
+.contact-form-container {
+  background-image: url("../assets/contactPic.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Use 100vh to ensure the container takes up the full viewport height */
+  width: 100vw; /* Ensure full width coverage */
+}
+
+/* Make the contact form itself smaller and centered */
+.contact-form-wrapper {
+  background: rgba(0, 0, 0, 0.85); /* Darker background for more contrast */
+  padding: 40px;
+  border-radius: 20px; /* Increase border-radius for a more modern look */
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.contact-form-wrapper:hover {
+  transform: translateY(-5px); /* Slight lift on hover for a dynamic effect */
+}
+
+.contact-form-header h1 {
+  font-size: 36px; /* Larger header for prominence */
+  color: #d0d60b; /* Maintain brand color */
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.contact-form-header p {
+  font-size: 16px;
+  color: #d3d3d3;
+  margin-bottom: 30px; /* Increase spacing for clarity */
+  text-align: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form-input,
+.contact-form-textarea {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Slightly less transparent for better readability */
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.contact-form-input:focus,
+.contact-form-textarea:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* Focus effect */
+}
+
+.contact-form-input::placeholder,
+.contact-form-textarea::placeholder {
+  color: #666; /* Lighter placeholder text for a softer feel */
+}
+
+.contact-form-textarea {
+  height: 120px; /* Increase height for better user experience */
+  resize: none;
+}
+
+.contact-form-button {
+  background-color: #8e9a1d;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-form-button:hover {
+  background-color: #6c7a16;
+  transform: translateY(-3px); /* Slight lift on hover */
+}
+
+.contact-form-button:active {
+  transform: translateY(1px); /* Slight press effect on click */
+}

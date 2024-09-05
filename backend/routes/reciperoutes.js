@@ -29,11 +29,33 @@ const express = require('express');
 const router = express.Router();
 const recipeController = require('../controllers/recipecontroller');
 
-// تعريف الروتات
-router.post('/recipes', recipeController.createRecipe);
-router.get('/by-chef', recipeController.getRecipesByChef);
-router.put('/:recipeId', recipeController.updateRecipe);
-router.delete('/:recipeId', recipeController.deleteRecipe);
-router.get('/', recipeController.getAllRecipes);
+// Route to handle recipe creation with file uploads
+router.post(
+  "/recipes",
+  upload.fields([
+    { name: "mainImage", maxCount: 1 },
+    { name: "subImages", maxCount: 4 },
+    { name: "video", maxCount: 1 },
+  ]),
+  recipeController.createRecipe
+);
+
+router.put(
+  "/recipes/:recipeId",
+  upload.fields([
+    { name: "mainImage", maxCount: 1 },
+    { name: "subImages", maxCount: 10 },
+    { name: "video", maxCount: 1 },
+  ]),
+  recipeController.updateRecipe
+);
+
+// Other routes
+router.get("/by-chef", recipeController.getRecipesByChef);
+router.put("/:recipeId", recipeController.updateRecipe);
+router.delete("/:recipeId", recipeController.deleteRecipe);
+router.get("/recipes-get", recipeController.getAllRecipes);
+router.delete("/recipes/:recipeId", recipeController.deleteRecipe);
+router.get("/recipes-info/:recipeId", recipeController.getRecipeById);
 
 module.exports = router;

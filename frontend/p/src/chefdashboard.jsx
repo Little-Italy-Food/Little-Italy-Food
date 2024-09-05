@@ -207,6 +207,7 @@ function ChefDashboard() {
         ) : (
           <RecipesList
             items={items}
+            setItems={setItems}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />
