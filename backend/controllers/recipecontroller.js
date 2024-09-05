@@ -381,3 +381,26 @@ exports.deleteRecipe = async (req, res) => {
     });
   }
 };
+
+exports.getRecipeById = async (req, res) => {
+  try {
+    const { recipeId } = req.params;
+
+    const recipeObjectId = new mongoose.Types.ObjectId(recipeId);
+
+    console.log("Converted Recipe ObjectId:", recipeObjectId);
+
+    const recipe = await Recipe.findById(recipeObjectId);
+
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found." });
+    }
+
+    res.json(recipe);
+  } catch (error) {
+    console.error("Error fetching recipe:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the recipe." });
+  }
+};

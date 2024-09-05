@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 export const UserContext = createContext();
 
@@ -9,16 +9,18 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await axios.get('http://localhost:5001/api/users/me', {
-            headers: { 'x-auth-token': token }
+          const res = await axios.get("http://localhost:5001/api/users/me", {
+            headers: { "x-auth-token": token },
           });
           setUser(res.data);
         } catch (err) {
-          console.error('Error fetching user:', err.response?.data || err.message);
-          localStorage.removeItem('token');  // Clear invalid token
+          console.error(
+            "Error fetching user:",
+            err.response?.data || err.message
+          );
         }
       }
       setLoading(false);

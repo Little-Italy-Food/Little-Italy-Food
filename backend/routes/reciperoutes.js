@@ -31,5 +31,6 @@ router.put("/:recipeId", recipeController.updateRecipe);
 router.delete("/:recipeId", recipeController.deleteRecipe);
 router.get("/recipes-get", recipeController.getAllRecipes);
 router.delete("/recipes/:recipeId", recipeController.deleteRecipe);
+router.get("/recipes-info/:recipeId", recipeController.getRecipeById);
 
 module.exports = router;
