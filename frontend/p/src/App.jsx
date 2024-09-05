@@ -16,15 +16,12 @@ import DishDetailsPage from "./dishdetailspage";
 import Cart from "./cart";
 import Checkout from "./checkout";
 import Navbar from "./navbar";
-import OurChefs from "./ourchefs";
 import ChefProfile from "./chefprofile";
 import OrderConfirmation from "./orderconfirmation";
 import AddRecipe from "./pages/AddRecipe";
 import Home from "./Home/Home";
 import RecipeCards from "./pages/ricipe-listin";
 import ContactUs from "./contact/contact";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Chefinfo from "./chefinfo";
 import UserProfile from "./userprofile";
 
@@ -36,6 +33,12 @@ const NavbarWrapper = ({ children }) => (
   </>
 );
 
+import { UserProvider } from "./usercontext";
+import OurChefs from "./ourchefs";
+import ChefProfile from "./chefprofile";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import RecipeView from "./pages/RecipeView";
 function App() {
   return (
     <PayPalScriptProvider
@@ -170,6 +173,12 @@ function App() {
 
                 <Route path="/chef/info" element={<Chefinfo />} />
 
+                    // <NavbarWrapper>
+                    <ChefProfile />
+                    // </NavbarWrapper>
+                  }
+                />
+                <Route path="/recipe/:id" element={<RecipeView />} />
               </Routes>
               <ToastContainer />
             </div>

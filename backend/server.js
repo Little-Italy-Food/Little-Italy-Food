@@ -4,7 +4,7 @@ const cors = require("cors");
 const contact = require("./routes/contactRoutes");
 require("dotenv").config();
 const path = require("path");
-
+const recipeRoutes = require("./routes/reciperoutes");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -42,5 +42,6 @@ app.use('/api/subscriptions', require('./routes/subscriptionroutes'));
 app.use('/api/cheforders', require('./routes/chefordersroutes')); 
 app.use('/api/reports', require('./routes/reportsroutes'));
 app.use('/api/userprofile', require('./routes/userprofileroutes'));
+app.use("/api/recipes", recipeRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
