@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Pizza, Euro, User, Send, MessageSquare, Star, ShoppingCart, Plus, Minus, Share2 } from 'lucide-react';
+import { Pizza, Euro, User, Send, MessageSquare, Star, ShoppingCart, Plus, Minus, Share2, Flag } from 'lucide-react';
 import { CartContext } from './cartcontext';
 import Navbar from './navbar';
 import { toast, ToastContainer } from 'react-toastify';
@@ -28,6 +28,11 @@ const DishDetailsPage = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportType, setReportType] = useState(null);
+  const [reportItemId, setReportItemId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -205,7 +210,6 @@ const DishDetailsPage = () => {
     }
   };
 
-  
   const handleShare = async (receiverId) => {
     try {
       await axios.post('http://localhost:5001/api/notifications', {
@@ -229,6 +233,45 @@ const DishDetailsPage = () => {
     }
   };
 
+  const handleReportClick = (type, itemId) => {
+    if (!user) {
+      setLoginPrompt(true);
+      return;
+    }
+    setReportType(type);
+    setReportItemId(itemId);
+    setShowReportModal(true);
+  };
+
+  const handleReportSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const reportData = {
+        [reportType === 'dish' ? 'dishId' : 'commentId']: reportItemId,
+        reason: reportReason
+      };
+
+      await axios.post('http://localhost:5001/api/reports', reportData, {
+        headers: { 'x-auth-token': localStorage.getItem('token') }
+      });
+
+      setShowReportModal(false);
+      setReportReason('');
+      setReportType(null);
+      setReportItemId(null);
+      toast.success('Report submitted successfully', {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      toast.error('Error submitting report. Please try again.', {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -243,7 +286,7 @@ const DishDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 via-white to-red-100 py-8">
-      <Navbar />
+    
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-lg shadow-xl overflow-hidden border-2 border-green-200">
           <div className="relative h-64 sm:h-80 lg:h-96">
@@ -313,6 +356,13 @@ const DishDetailsPage = () => {
               <Share2 className="mr-2" size={18} />
               Share
             </button>
+            <button
+              onClick={() => handleReportClick('dish', id)}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center ml-4"
+            >
+              <Flag className="mr-2" size={18} />
+              Report Dish
+            </button>
           </div>
         </div>
 
@@ -321,12 +371,20 @@ const DishDetailsPage = () => {
           <div className="space-y-4 mb-6">
             {comments.map((comment) => (
               <div key={comment._id} className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center mb-2">
-                  <User className="w-5 h-5 text-gray-500 mr-2" />
-                  <span className="font-semibold text-gray-700">{comment.userId?.username || 'Anonymous'}</span>
-                  {user && user.id === comment.userId?._id && (
-                    <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">You</span>
-                  )}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    <User className="w-5 h-5 text-gray-500 mr-2" />
+                    <span className="font-semibold text-gray-700">{comment.userId?.username || 'Anonymous'}</span>
+                    {user && user.id === comment.userId?._id && (
+                      <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">You</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleReportClick('comment', comment._id)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    <Flag size={16} />
+                  </button>
                 </div>
                 <p className="text-gray-600">{comment.content}</p>
                 
@@ -347,7 +405,7 @@ const DishDetailsPage = () => {
                   </div>
                 )}
 
-{user && (replyingTo !== comment._id ? (
+                {user && (replyingTo !== comment._id ? (
                   <button
                     onClick={() => setReplyingTo(comment._id)}
                     className="mt-2 text-sm text-green-500 flex items-center"
@@ -439,6 +497,41 @@ const DishDetailsPage = () => {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {showReportModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
+              Report {reportType === 'dish' ? 'Dish' : 'Comment'}
+            </h3>
+            <form onSubmit={handleReportSubmit}>
+              <textarea
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                placeholder="Reason for reporting..."
+                className="w-full p-2 mb-4 border rounded"
+                rows="4"
+                required
+              ></textarea>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowReportModal(false)}
+                  className="mr-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  Submit Report
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
