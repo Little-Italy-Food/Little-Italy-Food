@@ -25,6 +25,12 @@ import ChefProfile from "./chefprofile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RecipeView from "./pages/RecipeView";
+
+import RecipeFinder from "./pages/RecipeFinder";
+import SubstituteFinder from "./pages/SubstituteFinder";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 function App() {
   return (
     <PayPalScriptProvider
@@ -44,6 +50,7 @@ function App() {
                 <Route path="/dishespage" element={<DishesPage />} />
                 <Route path="/dish/:id" element={<DishDetailsPage />} />
                 <Route path="/cart" element={<Cart />} />
+
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/recipes" element={<RecipeCards />} />
                 <Route path="/" element={<Home />} />
@@ -70,6 +77,11 @@ function App() {
                   }
                 />
                 <Route path="/recipe/:id" element={<RecipeView />} />
+                <Route path="/recipe-finder" element={<RecipeFinder />} />
+                <Route
+                  path="/substitute-finder"
+                  element={<SubstituteFinder />}
+                />
               </Routes>
               <ToastContainer />
             </div>

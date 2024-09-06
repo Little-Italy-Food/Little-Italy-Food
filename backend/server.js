@@ -5,6 +5,9 @@ const contact = require("./routes/contactRoutes");
 require("dotenv").config();
 const path = require("path");
 const recipeRoutes = require("./routes/reciperoutes");
+const postRoutes = require("./routes/postRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -38,7 +41,8 @@ app.use("/api/discounts", require("./routes/discountroutes"));
 app.use("/api/notifications", require("./routes/notificationroutes"));
 app.use("/api/chefs", require("./routes/chefsroutes"));
 app.use("/api/subscriptions", require("./routes/subscriptionroutes"));
-
+app.use("/api", reviewRoutes);
 app.use("/api/recipes", recipeRoutes);
+app.use("/posts", postRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

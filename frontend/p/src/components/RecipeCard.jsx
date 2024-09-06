@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import axios
 import { Link } from "react-router-dom";
 import m1 from "../assets/m1-removebg-preview.png";
 import m2 from "../assets/m2-removebg-preview.png";
@@ -26,21 +27,73 @@ const SpecialMedal = ({ onHover }) => (
 );
 
 const RecipeCard = ({ recipe }) => {
-  if (!recipe) return null;
   const [flipped, setFlipped] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [collectionName, setCollectionName] = useState("");
+  const [collections, setCollections] = useState([]);
+  const [creatingNewCollection, setCreatingNewCollection] = useState(false);
 
   const mainImageUrl = `${baseURL}${recipe.mainImage}`;
 
+  useEffect(() => {
+    // Fetch existing collections when the component mounts
+    const fetchCollections = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:5001/api/recipes/collection",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCollections(response.data || []); // Set collections to fetched data
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      }
+    };
+
+    fetchCollections();
+  }, []);
+
   const handleHover = () => {
-    setModalContent(recipe); // Set the recipe data as modal content
-    setModalOpen(true); // Open the modal
+    setModalContent(recipe);
+    setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setModalContent(null);
+  };
+
+  // Function to save the recipe to the backend
+  const saveRecipe = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Get token from local storage
+
+      // Validate collection name
+      if (!collectionName) {
+        alert("Please select or enter a collection name.");
+        return;
+      }
+
+      const response = await axios.post(
+        "http://localhost:5001/api/recipes/save-recipe",
+        { recipeId: recipe._id, collectionName }, // Send recipe ID and collection name
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token in the header
+          },
+        }
+      );
+      console.log("Recipe saved successfully:", response.data);
+      alert("Recipe saved successfully!");
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+      alert("Failed to save recipe.");
+    }
   };
 
   return (
@@ -102,6 +155,52 @@ const RecipeCard = ({ recipe }) => {
               View Recipe
             </button>
           </Link>
+          <div className="mt-2">
+            <select
+              value={creatingNewCollection ? "custom" : collectionName}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "custom") {
+                  setCreatingNewCollection(true);
+                  setCollectionName("");
+                } else {
+                  setCreatingNewCollection(false);
+                  setCollectionName(value);
+                }
+              }}
+              className="px-4 py-2 text-sm font-medium bg-gray-200 rounded-lg shadow"
+            >
+              {!creatingNewCollection && (
+                <>
+                  <option value="">Select a Collection</option>
+                  {collections.map((collection) => (
+                    <option
+                      key={collection._id}
+                      value={collection.collectionName}
+                    >
+                      {collection.collectionName}
+                    </option>
+                  ))}
+                </>
+              )}
+              <option value="custom">Create New Collection</option>
+            </select>
+            {creatingNewCollection && (
+              <input
+                type="text"
+                value={collectionName}
+                onChange={(e) => setCollectionName(e.target.value)}
+                placeholder="Enter new collection name"
+                className="mt-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg shadow"
+              />
+            )}
+            <button
+              onClick={saveRecipe}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg shadow hover:bg-blue-700 transition-colors duration-300 mt-2"
+            >
+              Save Recipe
+            </button>
+          </div>
         </div>
       </div>
     </>
