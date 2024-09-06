@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Recipe = require("../models/recipes");
+const SavedRecipe = require("../models/savedRecipe");
 const mongoose = require("mongoose");
 
 // Create a new recipe
@@ -388,8 +389,6 @@ exports.getRecipeById = async (req, res) => {
 
     const recipeObjectId = new mongoose.Types.ObjectId(recipeId);
 
-    console.log("Converted Recipe ObjectId:", recipeObjectId);
-
     const recipe = await Recipe.findById(recipeObjectId);
 
     if (!recipe) {
@@ -402,5 +401,185 @@ exports.getRecipeById = async (req, res) => {
     res
       .status(500)
       .json({ message: "An error occurred while fetching the recipe." });
+  }
+};
+
+exports.saveRecipe = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decodedToken.user.id;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ message: "Invalid token or missing userId" });
+    }
+    const { recipeId, collectionName } = req.body;
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    let savedCollection = await SavedRecipe.findOne({ userId, collectionName });
+
+    if (!savedCollection) {
+      savedCollection = new SavedRecipe({
+        userId,
+        collectionName: collectionName || "General",
+        recipes: [recipeId],
+      });
+    } else {
+      if (!savedCollection.recipes.includes(recipeId)) {
+        savedCollection.recipes.push(recipeId);
+      } else {
+        return res.status(400).json({
+          message: "Recipe already saved in this collection",
+        });
+      }
+    }
+
+    await savedCollection.save();
+
+    return res
+      .status(200)
+      .json({ message: "Recipe saved successfully", savedCollection });
+  } catch (err) {
+    console.error("Error:", err);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
+  }
+};
+
+exports.getUserCollections = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decodedToken.user.id;
+
+    const collections = await SavedRecipe.find({ userId });
+
+    if (!collections || collections.length === 0) {
+      return res.status(404).json({ message: "No collections found" });
+    }
+
+    return res.status(200).json(collections);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getCollectionsByAuthenticatedUser = async (req, res) => {
+  try {
+    // Extract and verify the JWT token from the request headers
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.user.id;
+
+    // Query the database to find all collections for the authenticated user
+    const collections = await SavedRecipe.find({ userId });
+
+    if (!collections || collections.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No collections found for this user" });
+    }
+
+    return res.status(200).json(collections);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getRecipesByCuisine = async (req, res) => {
+  const { cuisineType } = req.params; // Get cuisineType from params
+  try {
+    const recipes = await Recipe.find({ cuisineType, isDeleted: false }).exec();
+    if (!recipes || recipes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No recipes found for this cuisine type" });
+    }
+    return res.status(200).json(recipes);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message || "Unknown error",
+    });
+  }
+};
+
+exports.getRecipesByChefId = async (req, res) => {
+  try {
+    const { chefId } = req.params;
+
+    if (!chefId) {
+      return res.status(400).json({ error: "Chef ID is required" });
+    }
+
+    const chefObjectId = new mongoose.Types.ObjectId(chefId);
+
+    const recipes = await Recipe.find({
+      chefId: chefObjectId,
+    });
+
+    console.log("Number of recipes found for chefId:", recipes.length);
+
+    if (recipes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No recipes found for this chef." });
+    }
+
+    res.json(recipes);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching recipes." });
+  }
+};
+
+exports.getSavedRecipesByUserId = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.user.id;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const savedRecipes = await SavedRecipe.find({
+      userId: userObjectId,
+    }).populate("recipes");
+
+    console.log(
+      "Number of saved recipes found for userId:",
+      savedRecipes.length
+    );
+
+    if (savedRecipes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No saved recipes found for this user." });
+    }
+
+    res.json(savedRecipes);
+  } catch (error) {
+    console.error("Error fetching saved recipes:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching saved recipes." });
   }
 };

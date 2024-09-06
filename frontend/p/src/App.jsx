@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { CartProvider } from "./cartcontext";
-import { UserProvider } from "./usercontext";
+// import { UserProvider } from "./usercontext";
 import Login from "../src/login";
 import Register from "../src/register";
 import ChefDashboard from "./chefdashboard";
@@ -16,7 +16,7 @@ import DishDetailsPage from "./dishdetailspage";
 import Cart from "./cart";
 import Checkout from "./checkout";
 import Navbar from "./navbar";
-import ChefProfile from "./chefprofile";
+// import ChefProfile from "./chefprofile";
 import OrderConfirmation from "./orderconfirmation";
 import AddRecipe from "./pages/AddRecipe";
 import Home from "./Home/Home";
@@ -24,6 +24,8 @@ import RecipeCards from "./pages/ricipe-listin";
 import ContactUs from "./contact/contact";
 import Chefinfo from "./chefinfo";
 import UserProfile from "./userprofile";
+
+import SavedRecipe from "./pages/SavedRecipe";
 
 // New component to wrap routes that should include the Navbar
 const NavbarWrapper = ({ children }) => (
@@ -39,6 +41,12 @@ import ChefProfile from "./chefprofile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RecipeView from "./pages/RecipeView";
+
+import RecipeFinder from "./pages/RecipeFinder";
+import SubstituteFinder from "./pages/SubstituteFinder";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 function App() {
   return (
     <PayPalScriptProvider
@@ -54,6 +62,15 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/SavedRecipe" element={<SavedRecipe />} />
+                <Route path="/dishespage" element={<DishesPage />} />
+                <Route path="/dish/:id" element={<DishDetailsPage />} />
+                <Route path="/cart" element={<Cart />} />
+
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/recipes" element={<RecipeCards />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/add-recipe" element={<AddRecipe />} />
                 <Route
                   path="/chef"
                   element={
@@ -173,12 +190,12 @@ function App() {
 
                 <Route path="/chef/info" element={<Chefinfo />} />
 
-                    // <NavbarWrapper>
-                    <ChefProfile />
-                    // </NavbarWrapper>
-                  }
+                <Route path="/recipe1/:id" element={<RecipeView />} />
+                <Route path="/recipe-finder" element={<RecipeFinder />} />
+                <Route
+                  path="/substitute-finder"
+                  element={<SubstituteFinder />}
                 />
-                <Route path="/recipe/:id" element={<RecipeView />} />
               </Routes>
               <ToastContainer />
             </div>

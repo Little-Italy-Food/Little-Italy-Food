@@ -5,6 +5,16 @@ import m3 from "../assets/m3-removebg-preview.png";
 
 import Modal1 from "./model/Modal1";
 
+import {
+  Sliders,
+  Clock,
+  Book,
+  Utensils,
+  SortAsc,
+  SortDesc,
+  CheckSquare,
+} from "lucide-react";
+
 const Filters = ({ onFilterChange }) => {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -86,155 +96,190 @@ const Filters = ({ onFilterChange }) => {
     onFilterChange("freezableRecipe", checked);
   };
 
+  const FilterSection = ({ label, children }) => (
+    <div className="flex flex-col 1">
+      <label className="mb-2 font-semibold text-gray-700 flex items-center">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+
+  const CheckboxSection = ({ label, checked, onChange }) => (
+    <div className="flex items-center mb-1 mt-7 ">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 text-[#FF5733] focus:ring-[#FF5733] border-gray-300 rounded"
+      />
+      <label className="ml-2 font-semibold text-gray-700 flex items-center">
+        {label}
+      </label>
+    </div>
+  );
+
   return (
     <>
       <div
-        className="w-96 p-4 bg-gray-100 rounded-lg  z-50 flex flex-col space-y-6 ml-[4rem]  absolute top-[40rem]"
+        className="w-full p-6 -mt-5 bg-white rounded-lg z-50 space-y-6 "
         style={{
-          boxShadow: "1px 1px 14px 1px rgba(255,87,51,1)",
+          boxShadow: "1px 1px 14px 1px rgba(255,87,51,0.5)",
         }}
       >
-        <div className="flex flex-col">
-          <label className="mb-2 font-semibold text-gray-700">
-            Cooking Time (mins):
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="120"
-            value={time}
-            className="w-full h-2 bg-green-500 rounded-lg"
-            onChange={handleTimeChange}
-          />
-          <div className="text-right text-gray-600">{time} mins</div>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="mb-2 font-semibold text-gray-700">
-            Number of Ingredients:
-          </label>
-          <input
-            type="number"
-            min="1"
-            value={ingredients}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-            onChange={handleIngredientsChange}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label className="mb-2 font-semibold text-gray-700">
-            Dietary Preferences:
-          </label>
-          <select
-            className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500"
-            onChange={(e) => onFilterChange("diet", e.target.value)}
+        <h2 className="text-2xl font-bold mb-6 text-[#FF5733] flex items-center">
+          <Sliders className="mr-2" /> Recipe Filters
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <FilterSection
+            label={
+              <>
+                <Clock className="mr-1" /> Cooking Time (mins)
+              </>
+            }
           >
-            <option value="">All</option>
-            <option value="gluten-free">Gluten-Free</option>
-            <option value="vegan">Vegan</option>
-            <option value="vegetarian">Vegetarian</option>
-          </select>
-        </div>
+            <input
+              type="range"
+              min="0"
+              max="120"
+              value={time}
+              className="w-full h-2 bg-[#FF5733] rounded-lg appearance-none cursor-pointer"
+              onChange={handleTimeChange}
+            />
+            <div className="text-right text-gray-600">{time} mins</div>
+          </FilterSection>
 
-        <div className="flex flex-col">
-          <label className="mb-2 font-semibold text-gray-700">Sort By:</label>
-          <select
-            className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500"
-            value={sortBy}
-            onChange={handleSortByChange}
+          <FilterSection
+            label={
+              <>
+                <Book className="mr-1" /> Number of Ingredients
+              </>
+            }
           >
-            <option value="">None</option>
-            <option value="createdAt">Date Created</option>
-            <option value="difficulty">Difficulty</option>
-          </select>
-        </div>
+            <input
+              type="number"
+              min="1"
+              value={ingredients}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF5733]"
+              onChange={handleIngredientsChange}
+            />
+          </FilterSection>
 
-        {sortBy === "createdAt" && (
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">
-              Sort Order:
-            </label>
+          <FilterSection
+            label={
+              <>
+                <Utensils className="mr-1" /> Dietary Preferences
+              </>
+            }
+          >
             <select
-              className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500"
-              value={sortOrder}
-              onChange={handleSortOrderChange}
-            >
-              <option value="asc">Oldest First</option>
-              <option value="desc">Newest First</option>
-            </select>
-          </div>
-        )}
-
-        {sortBy === "difficulty" && (
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">
-              Difficulty:
-            </label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500"
-              value={difficulty}
-              onChange={handleDifficultyChange}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-[#FF5733]"
+              onChange={(e) => onFilterChange("diet", e.target.value)}
             >
               <option value="">All</option>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="difficult">Difficult</option>
+              <option value="gluten-free">Gluten-Free</option>
+              <option value="vegan">Vegan</option>
+              <option value="vegetarian">Vegetarian</option>
             </select>
-          </div>
-        )}
+          </FilterSection>
 
-        <div className="flex items-center">
-          <label className="mr-2 font-semibold text-gray-700">
-            Meal Prep Friendly:
-          </label>
-          <input
-            type="checkbox"
+          <FilterSection
+            label={
+              <>
+                <SortAsc className="mr-1" /> Sort By
+              </>
+            }
+          >
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-[#FF5733]"
+              value={sortBy}
+              onChange={handleSortByChange}
+            >
+              <option value="">None</option>
+              <option value="createdAt">Date Created</option>
+              <option value="difficulty">Difficulty</option>
+            </select>
+          </FilterSection>
+
+          {sortBy === "createdAt" && (
+            <FilterSection
+              label={
+                <>
+                  <SortDesc className="mr-1" /> Sort Order
+                </>
+              }
+            >
+              <select
+                className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-[#FF5733]"
+                value={sortOrder}
+                onChange={handleSortOrderChange}
+              >
+                <option value="asc">Oldest First</option>
+                <option value="desc">Newest First</option>
+              </select>
+            </FilterSection>
+          )}
+
+          {sortBy === "difficulty" && (
+            <FilterSection label="Difficulty">
+              <select
+                className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-[#FF5733]"
+                value={difficulty}
+                onChange={handleDifficultyChange}
+              >
+                <option value="">All</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="difficult">Difficult</option>
+              </select>
+            </FilterSection>
+          )}
+
+          <CheckboxSection
+            label={
+              <>
+                <CheckSquare className="mr-2 text-[#FF5733]" /> Meal Prep
+                Friendly
+              </>
+            }
             checked={mealPrepFriendly}
             onChange={handleMealPrepFriendlyChange}
           />
-        </div>
-
-        <div className="flex items-center">
-          <label className="mr-2 font-semibold text-gray-700">
-            Freezable Recipe:
-          </label>
-          <input
-            type="checkbox"
+          <CheckboxSection
+            label={
+              <>
+                <CheckSquare className="mr-1 text-[#FF5733]" /> Freezable Recipe
+              </>
+            }
             checked={freezableRecipe}
             onChange={handleFreezableRecipeChange}
           />
         </div>
 
-        <div className="flex justify-center">
-          <div
-            className="medal text-yellow-800 rounded-md cursor-pointer"
-            onClick={() =>
-              openModal(m1, "Title for m1", "This is static text for m1.")
-            }
-          >
-            <img src={m1} alt="Medal" className="w-24 h-24" />
-          </div>
-          <div
-            className="medal text-yellow-800 rounded-md cursor-pointer"
-            onClick={() =>
-              openModal(m2, "Title for m2", "This is static text for m2.")
-            }
-          >
-            <img src={m2} alt="Medal" className="w-24 h-24" />
-          </div>
-          <div
-            className="medal text-yellow-800 rounded-md cursor-pointer"
-            onClick={() =>
-              openModal(m3, "Title for m3", "This is static text for m3.")
-            }
-          >
-            <img src={m3} alt="Medal" className="w-24 h-24" />
-          </div>
+        <div className="flex justify-center space-x-4 mt-6">
+          {[m1, m2, m3].map((medal, index) => (
+            <div
+              key={index}
+              className="medal text-yellow-800 rounded-md cursor-pointer transition-transform hover:scale-110"
+              onClick={() =>
+                openModal(
+                  medal,
+                  `Title for m${index + 1}`,
+                  `This is static text for m${index + 1}.`
+                )
+              }
+            >
+              <img
+                src={medal}
+                alt={`Medal ${index + 1}`}
+                className="w-24 h-24"
+              />
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="absolute top-[15rem] left-[25rem] z-50">
+      <div className="absolute top-[10rem] left-[22rem] z-50">
         <div className="font-sans p-4">
           <ul className="flex gap-4 bg-gray-100 rounded-2xl p-1 w-max overflow-hidden">
             {[
@@ -250,8 +295,8 @@ const Filters = ({ onFilterChange }) => {
                 key={type}
                 className={`tab text-gray-600 rounded-2xl font-semibold text-center text-sm py-3 px-6 tracking-wide cursor-pointer ${
                   mealType === type
-                    ? "bg-green-500 text-white"
-                    : "bg-white text-green-500"
+                    ? "bg-[#FF5733] text-white"
+                    : "bg-white text-[#FF5733]"
                 }`}
                 onClick={() => handleMealTypeChange(type)}
               >
@@ -270,8 +315,8 @@ const Filters = ({ onFilterChange }) => {
                 key={type}
                 className={`tab text-gray-600 rounded-2xl font-semibold text-center text-sm py-3 px-6 tracking-wide cursor-pointer ${
                   cuisineType === type
-                    ? "bg-green-500 text-white"
-                    : "bg-white text-green-500"
+                    ? "bg-[#FF5733] text-white"
+                    : "bg-white text-[#FF5733]"
                 }`}
                 onClick={() => handleCuisineTypeChange(type)}
               >

@@ -12,20 +12,19 @@ const ForYou = () => {
 
   return (
     <>
-      <div className="flex justify-start absolute left-[40rem] ">
-        <div className="container mx-auto mt-8 mb-14">
-          <h2 className="text-2xl font-bold mb-4">For You</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recipes.length > 0 ? (
-              recipes.map((recipe, index) => (
-                <RecipeCard key={index} recipe={recipe} />
-              ))
-            ) : (
-              <p>No saved recipes found.</p>
-            )}
-          </div>
+      <div className="container mx-auto mb-14 px-20 bg-orange-200 h-[31rem] rounded-lg ">
+        <h2 className="text-5xl text-center font-bold mb-4 pt-4">For You</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {recipes.length > 0 ? (
+            recipes.map((recipe, index) => (
+              <RecipeCard key={index} recipe={recipe} />
+            ))
+          ) : (
+            <p className="col-span-full text-center">No saved recipes found.</p>
+          )}
         </div>
       </div>
+
       <br />
     </>
   );
