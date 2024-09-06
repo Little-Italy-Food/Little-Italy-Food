@@ -34,6 +34,7 @@ router.delete("/recipes/:recipeId", recipeController.deleteRecipe);
 router.get("/recipes-info/:recipeId", recipeController.getRecipeById);
 router.post("/save-recipe", recipeController.saveRecipe);
 router.get("/save-recipeUser", recipeController.getUserCollections);
+router.get("/getAll-saved", recipeController.getCollectionsByAuthenticatedUser);
 router.get("/collection", recipeController.getCollectionsByAuthenticatedUser);
 router.get(
   "/recipes/cuisine/:cuisineType",

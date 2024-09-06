@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Clock, Users, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CuisineType = ({ cuisineType }) => {
   const [recipes, setRecipes] = useState([]);
@@ -27,7 +28,7 @@ const CuisineType = ({ cuisineType }) => {
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#FF5733]"></div>
       </div>
     );
 
@@ -79,13 +80,13 @@ const CuisineType = ({ cuisineType }) => {
                     {recipe.cookingTime.minutes}m
                   </span>
                 </div>
-                <a
-                  href={`/recipe/${recipe._id}`}
-                  className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+                <Link
+                  to={`/recipe/${recipe._id}`}
+                  className="inline-flex items-center  px-4 py-2 bg-[#FF5733] text-white rounded-md hover:opacity-70 transition-colors duration-300"
                 >
                   Read More
                   <ChevronRight size={20} className="ml-2" />
-                </a>
+                </Link>
               </div>
             </div>
           ))}

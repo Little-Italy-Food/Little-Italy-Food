@@ -7,7 +7,7 @@ import Modal from "../components/model/Modal";
 
 import ForYou from "../components/ForYouSection";
 
-import Video from "../assets/123629-728697948_tiny.mp4";
+import Video from "../assets/istockphoto-1210111931-640_adpp_is.mp4";
 
 const RecipeCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -157,39 +157,43 @@ const RecipeCards = () => {
 
   return (
     <>
+      {/* Hero Section with Background Video */}
       <div className="relative font-sans">
         <video
           src={Video}
           autoPlay
           loop
           muted
-          className="absolute inset-0 w-full h-[35rem] object-cover"
+          className="absolute inset-0 w-full h-[30rem] object-cover"
         />
 
-        <div
-          className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-md"
-          style={{ backdropFilter: "blur(5px)" }}
-        />
+        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px]" />
 
-        <div className="relative z-50 h-[35rem] max-w-6xl mx-auto flex flex-col justify-center items-center text-center text-white p-6">
-          {/* Your content here */}
-        </div>
+        <div className="relative z-50 h-[30rem] max-w-6xl mx-auto flex flex-col justify-center items-center text-center text-white p-6"></div>
       </div>
 
-      <div className="container mx-auto">
-        <SearchBar onSearch={handleSearch} onVoiceSearch={handleVoiceSearch} />
-        <Filters onFilterChange={handleFilterChange} />
+      {/* Main Content */}
+      <div className="container mx-auto py-10">
+        {/* Search and Filters Section */}
+        <div className="mb-10 px-4 lg:px-20">
+          <SearchBar
+            onSearch={handleSearch}
+            onVoiceSearch={handleVoiceSearch}
+          />
+          <Filters onFilterChange={handleFilterChange} />
+        </div>
 
-        {/* Ensure proper spacing and positioning of the grid */}
+        {/* Recipes and Results */}
         <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 lg:px-20 mt-[5rem] ml-[30rem] mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 lg:px-20 mt-10 mb-16">
             {noResults ? (
-              <p className="text-center"></p>
+              <p className="text-center">No recipes found.</p>
             ) : filteredRecipes.length > 0 ? (
               filteredRecipes.map((recipe, index) => (
                 <RecipeCard key={index} recipe={recipe} />
               ))
             ) : (
+              // Loader if no recipes are found or data is being fetched
               <div className="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
                 <svg
                   className="text-gray-300 animate-spin"
@@ -205,7 +209,7 @@ const RecipeCards = () => {
                     strokeWidth="5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  ></path>
+                  />
                   <path
                     d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
                     stroke="currentColor"
@@ -213,29 +217,30 @@ const RecipeCards = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     className="text-gray-900"
-                  ></path>
+                  />
                 </svg>
               </div>
             )}
           </div>
         </div>
-        <div style={{ marginBottom: "96px" }}>
-          {filteredRecipes.length > 0 && (
+
+        {/* Pagination */}
+        {filteredRecipes.length > 0 && (
+          <div className="flex justify-center mb-12">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
-          )}
-        </div>
+          </div>
+        )}
+
         {/* Modal for No Results */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <p className="text-center">No results found</p>
+          <p className="text-center text-red-500">No results found</p>
         </Modal>
       </div>
-      <br />
       <ForYou />
-      <br />
     </>
   );
 };

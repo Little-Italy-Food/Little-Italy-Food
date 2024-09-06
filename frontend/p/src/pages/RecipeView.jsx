@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import jsPDF from "jspdf";
 import { Star, Clock, User, Thermometer, AlertCircle } from "lucide-react";
 import NumberInputModel from "../components/model/NumberInputModel";
 import CuisineType from "../components/CuisineType";
 import Review from "../components/ReviewAndComment";
+import Modal from "../components/model/ModelImage";
 
 const RecipeView = () => {
   const location = useLocation();
@@ -18,7 +19,18 @@ const RecipeView = () => {
   const [creatingNewCollection, setCreatingNewCollection] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [averageRating, setAverageRating] = useState(null);
-  console.log(averageRating);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  const openModal = (imageSrc) => {
+    setSelectedImage(imageSrc);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage("");
+  };
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -360,227 +372,273 @@ const RecipeView = () => {
     }
   };
 
-  return (
-    <div className="lg:px-32 mx-auto bg-white rounded-xl shadow-md overflow-hidden mt-1">
-      <div className="relative h-96">
-        <img
-          className="w-full h-full rounded-xl object-cover"
-          src={`http://localhost:5001/${recipe.mainImage}`}
-          alt={recipe.name}
-        />
-        <div className="absolute inset-0 rounded-xl bg-black bg-opacity-50 flex items-end">
-          <h1 className="text-4xl font-bold text-white p-6">{recipe.name}</h1>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="absolute top-2 right-2 bg-white p-2 rounded-full shadow"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              width="50"
-              height="50"
-              viewBox="0 0 50 50"
-            >
-              <path d="M 12.8125 2 C 12.335938 2.089844 11.992188 2.511719 12 3 L 12 47 C 11.996094 47.359375 12.1875 47.691406 12.496094 47.871094 C 12.804688 48.054688 13.1875 48.054688 13.5 47.875 L 25 41.15625 L 36.5 47.875 C 36.8125 48.054688 37.195313 48.054688 37.503906 47.871094 C 37.8125 47.691406 38.003906 47.359375 38 47 L 38 3 C 38 2.449219 37.550781 2 37 2 L 13 2 C 12.96875 2 12.9375 2 12.90625 2 C 12.875 2 12.84375 2 12.8125 2 Z M 14 4 L 36 4 L 36 45.25 L 25.5 39.125 C 25.191406 38.945313 24.808594 38.945313 24.5 39.125 L 14 45.25 Z"></path>
-            </svg>{" "}
-          </button>
-        </div>
-      </div>
+  const stopSpeech = () => {
+    console.log("Stopping speech synthesis.");
 
-      {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md transition-transform transform scale-95 hover:scale-100">
-            <h2 className="text-xl font-semibold mb-4">Save Recipe</h2>
-            <div className="mt-2">
-              <select
-                value={creatingNewCollection ? "custom" : collectionName}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === "custom") {
-                    setCreatingNewCollection(true);
-                    setCollectionName("");
-                  } else {
-                    setCreatingNewCollection(false);
-                    setCollectionName(value);
-                  }
-                }}
-                className="px-4 py-2 text-sm font-medium bg-gray-100 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+    if ("speechSynthesis" in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+    } else {
+      console.log("speechSynthesis is not supported in this browser.");
+      alert("Sorry, your browser does not support text-to-speech.");
+    }
+  };
+
+  return (
+    <div className=" bg-orange-50">
+      <div className="lg:px-32 mx-auto bg-orange-50 rounded-xl shadow-md overflow-hidden mt-1 ">
+        <div className="relative w-full h-96 shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out rounded-xl overflow-hidden">
+          <img
+            className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
+            src={`http://localhost:5001/${recipe.mainImage}`}
+            alt={recipe.name}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-6">
+            <h1 className="text-3xl font-semibold text-white drop-shadow-lg">
+              {recipe.name}
+            </h1>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="absolute top-4 right-4 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                width="30"
+                height="30"
+                className="text-gray-700"
               >
-                {!creatingNewCollection && (
-                  <>
-                    <option value="">Select a Collection</option>
-                    {collections.map((collection) => (
-                      <option
-                        key={collection._id}
-                        value={collection.collectionName}
-                      >
-                        {collection.collectionName}
-                      </option>
-                    ))}
-                  </>
-                )}
-                <option value="custom">Create New Collection</option>
-              </select>
-              {creatingNewCollection && (
-                <input
-                  type="text"
-                  value={collectionName}
-                  onChange={(e) => setCollectionName(e.target.value)}
-                  placeholder="Enter new collection name"
-                  className="mt-4 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
-                />
-              )}
-              <div className="mt-6 flex justify-end gap-4">
-                <button
-                  onClick={() => {
-                    saveRecipe();
-                    setModalOpen(false);
+                <path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm7 15.5l5.5-5.5H13V7h-2v6H6.5L12 18.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {modalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70">
+            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md transition-transform transform scale-95 hover:scale-100">
+              <h2 className="text-xl font-semibold mb-4v">Save Recipe</h2>
+              <div className="mt-2">
+                <select
+                  value={creatingNewCollection ? "custom" : collectionName}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "custom") {
+                      setCreatingNewCollection(true);
+                      setCollectionName("");
+                    } else {
+                      setCreatingNewCollection(false);
+                      setCollectionName(value);
+                    }
                   }}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                  className="px-4 py-2 text-sm font-medium bg-gray-100 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-300"
                 >
-                  Save Recipe
+                  {!creatingNewCollection && (
+                    <>
+                      <option value="">Select a Collection</option>
+                      {collections.map((collection) => (
+                        <option
+                          key={collection._id}
+                          value={collection.collectionName}
+                        >
+                          {collection.collectionName}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                  <option value="custom">Create New Collection</option>
+                </select>
+                {creatingNewCollection && (
+                  <input
+                    type="text"
+                    value={collectionName}
+                    onChange={(e) => setCollectionName(e.target.value)}
+                    placeholder="Enter new collection name"
+                    className="mt-4 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-300"
+                  />
+                )}
+                <div className="mt-6 flex justify-end gap-4">
+                  <button
+                    onClick={() => {
+                      saveRecipe();
+                      setModalOpen(false);
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-300"
+                  >
+                    Save Recipe
+                  </button>
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="p-8 bg-white rounded-xl shadow-lg">
+          {/* Tags Section */}
+          <div className="flex flex-wrap gap-3 mb-5">
+            {[
+              recipe.cuisineType,
+              recipe.mealType,
+              ...recipe.dietaryRestrictions,
+            ].map((item, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full text-sm font-medium shadow-md"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+
+          {/* Rating, Time, Servings, Difficulty */}
+          <div className="flex items-center space-x-6 text-sm text-gray-700 mb-6">
+            <div className="flex items-center">
+              <Star className="w-5 h-5 mr-2 text-orange-400" />
+              <span className="font-semibold">
+                {averageRating ? averageRating.toFixed(1) : "Loading..."}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="w-5 h-5 mr-2 text-orange-500" />
+              <span className="font-semibold">
+                {recipe.cookingTime.hours}h {recipe.cookingTime.minutes}m
+              </span>
+            </div>
+            <div className="flex items-center">
+              <User className="w-5 h-5 mr-2 text-orange-500" />
+              <span className="font-semibold">{recipe.servings} servings</span>
+            </div>
+            <div className="flex items-center">
+              <Thermometer className="w-5 h-5 mr-2 text-orange-500" />
+              <span className="font-semibold">{recipe.difficulty}</span>
+            </div>
+          </div>
+
+          {/* Description Section */}
+          <div className="mb-8 bg-gray-50 p-6 rounded-lg shadow-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Description</h2>
+              <div>
+                <button
+                  onClick={() =>
+                    speakText(
+                      `${recipe.comprehensiveDescription} ${recipe.briefDescription}`
+                    )
+                  }
+                  className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-2 rounded-lg shadow-md hover:scale-105 transition"
+                >
+                  Read Aloud
                 </button>
                 <button
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-300"
+                  onClick={stopSpeech}
+                  className="bg-red-500 text-white p-2 rounded-lg ml-2 shadow-md hover:scale-105 transition"
                 >
-                  Cancel
+                  Stop
                 </button>
+              </div>
+            </div>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              {recipe.comprehensiveDescription}
+            </p>
+            <p className="text-gray-700">{recipe.briefDescription}</p>
+          </div>
+
+          {/* Number Input */}
+          <NumberInputModel
+            label="Number of People"
+            value={numPeople}
+            onChange={(e) => setNumPeople(e.target.value)}
+            className="mb-6"
+          />
+
+          {/* Ingredients and Nutrition */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Ingredients Section */}
+            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Ingredients
+              </h2>
+              <ul className="list-disc list-inside text-gray-700 space-y-3">
+                {recipe.ingredients.map((ingredient, index) => (
+                  <li key={index} className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      checked={
+                        checkedIngredients[ingredient.ingredientsName] || false
+                      }
+                      onChange={() =>
+                        handleCheckboxChange(ingredient.ingredientsName)
+                      }
+                      className="form-checkbox h-5 w-5 text-orange-500"
+                    />
+                    <span className="font-medium">
+                      {calculateQuantity(ingredient.quantity)} {ingredient.unit}{" "}
+                      {ingredient.ingredientsName}
+                      {ingredient.alternative && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          (Alt: {ingredient.alternative})
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Nutrition Section */}
+            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Nutrition Values
+              </h2>
+              <div className="space-y-3 text-gray-700">
+                <p>
+                  <strong>Calories:</strong> {recipe.nutritionValues.calories}
+                </p>
+                <p>
+                  <strong>Carbs:</strong> {recipe.nutritionValues.carbs}
+                </p>
+                <p>
+                  <strong>Fat:</strong> {recipe.nutritionValues.fat}
+                </p>
+                <p>
+                  <strong>Protein:</strong> {recipe.nutritionValues.protein}
+                </p>
+                <p>
+                  <strong>Vitamins:</strong> {recipe.nutritionValues.vitamins}
+                </p>
               </div>
             </div>
           </div>
         </div>
-      )}
 
-      <div className="p-6">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {[
-            recipe.cuisineType,
-            recipe.mealType,
-            ...recipe.dietaryRestrictions,
-          ].map((item, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-sm"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-6">
-          <div className="flex items-center">
-            <Star className="w-4 h-4 mr-1" />
-            <span>
-              {averageRating ? averageRating.toFixed(1) : "Loading..."}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <Clock className="w-4 h-4 mr-1" />
-            <span>
-              {recipe.cookingTime.hours}h {recipe.cookingTime.minutes}m
-            </span>
-          </div>
-          <div className="flex items-center">
-            <User className="w-4 h-4 mr-1" />
-            <span>{recipe.servings} servings</span>
-          </div>
-          <div className="flex items-center">
-            <Thermometer className="w-4 h-4 mr-1" />
-            <span>{recipe.difficulty}</span>
-          </div>
-        </div>
-        <div className="mb-6 bg-gray-100 p-4 rounded-lg">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-semibold">Description</h2>
-            <button
-              onClick={() =>
-                speakText(
-                  `${recipe.comprehensiveDescription} ${recipe.briefDescription}`
-                )
-              }
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Read Aloud
-            </button>
-          </div>
-          <p className="text-gray-700 mb-4">
-            {recipe.comprehensiveDescription}
-          </p>
-          <p className="text-gray-700">{recipe.briefDescription}</p>
-        </div>
-        <NumberInputModel
-          label="Number of People"
-          value={numPeople}
-          onChange={(e) => setNumPeople(e.target.value)}
-        />
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={
-                      checkedIngredients[ingredient.ingredientsName] || false
-                    }
-                    onChange={() =>
-                      handleCheckboxChange(ingredient.ingredientsName)
-                    }
-                    className="form-checkbox"
-                  />
-                  <span>
-                    {calculateQuantity(ingredient.quantity)} {ingredient.unit}{" "}
-                    {ingredient.ingredientsName}
-                    {ingredient.alternative && (
-                      <span className="text-sm text-gray-500">
-                        {" "}
-                        (Alt: {ingredient.alternative})
-                      </span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">Nutrition Values</h2>
-            <div className="space-y-2 text-gray-700">
-              <p>
-                <strong>Calories:</strong> {recipe.nutritionValues.calories}
-              </p>
-              <p>
-                <strong>Carbs:</strong> {recipe.nutritionValues.carbs}
-              </p>
-              <p>
-                <strong>Fat:</strong> {recipe.nutritionValues.fat}
-              </p>
-              <p>
-                <strong>Protein:</strong> {recipe.nutritionValues.protein}
-              </p>
-              <p>
-                <strong>Vitamins:</strong> {recipe.nutritionValues.vitamins}
-              </p>
-            </div>
-          </div>
-        </div>
-        {recipe.subImages.length > 0 && (
+        {recipe && recipe.subImages && recipe.subImages.length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-semibold mb-4">Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {recipe.subImages.map((image, index) => (
                 <img
                   key={index}
-                  className="w-full h-40 object-cover rounded-lg"
+                  className="w-full h-40 object-cover rounded-lg cursor-pointer"
                   src={`http://localhost:5001/${image}`}
                   alt={`Sub Image ${index + 1}`}
+                  onClick={() => openModal(`http://localhost:5001/${image}`)}
                 />
               ))}
             </div>
           </div>
         )}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          imageSrc={selectedImage}
+        />
         <hr className="my-6 border-t border-gray-300" />
         {recipe.video && (
           <div className="mt-6">
@@ -594,6 +652,7 @@ const RecipeView = () => {
             </video>
           </div>
         )}
+
         <hr className="my-6 border-t border-gray-300" />
         <div className="flex justify-between text-sm text-gray-500">
           <p>Created: {new Date(recipe.createdAt).toLocaleDateString()}</p>
@@ -609,10 +668,10 @@ const RecipeView = () => {
             </span>
           </div>
         )}
-        <div className="mt-6 flex gap-4">
+        <div className="mt-6 flex gap-4 z-50">
           <button
             onClick={() => shareOnSocialMedia("whatsapp")}
-            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -672,8 +731,8 @@ const RecipeView = () => {
           </button>
 
           <button
-            onClick={() => shareOnSocialMedia("twitter")}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-900 transition-colors"
+            onClick={() => shareOnSocialMedia("x")}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -682,6 +741,7 @@ const RecipeView = () => {
               width="30"
               height="30"
               viewBox="0 0 50 50"
+              fill="gray"
             >
               <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
             </svg>
@@ -690,7 +750,7 @@ const RecipeView = () => {
 
           <button
             onClick={() => shareOnSocialMedia("facebook")}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -725,7 +785,7 @@ const RecipeView = () => {
 
           <button
             onClick={copyLink}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           >
             <img
               width="30"
@@ -738,9 +798,17 @@ const RecipeView = () => {
 
           <button
             onClick={downloadPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
           >
             Download PDF
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-[#FF5733] text-white rounded-lg hover:opacity-70 transition-colors">
+            <Link
+              to="/SavedRecipe"
+              className="flex items-center gap-2 px-4 py-1 w-full h-full text-white rounded-lg"
+            >
+              See Your Saved Recipe
+            </Link>
           </button>
         </div>
         <CuisineType cuisineType={recipe.cuisineType} />

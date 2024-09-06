@@ -317,7 +317,7 @@ const ReviewAndComment = ({ id }) => {
                   />
                   <button
                     onClick={() => handleReply(review._id)}
-                    className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                    className="mt-2 bg-[#FF5733] text-white py-2 px-4 rounded-lg font-semibold hover:opacity-70 transition duration-300"
                   >
                     Reply
                   </button>
@@ -332,7 +332,7 @@ const ReviewAndComment = ({ id }) => {
         {!showCommentSection && (
           <button
             onClick={() => setShowCommentSection(true)}
-            className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+            className="w-full bg-[#FF5733] text-white py-3 rounded-lg font-semibold hover:opacity-70 transition duration-300"
           >
             Write a Review
           </button>

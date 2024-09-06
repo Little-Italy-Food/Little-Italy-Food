@@ -42,6 +42,12 @@ app.use("/api/notifications", require("./routes/notificationroutes"));
 app.use("/api/chefs", require("./routes/chefsroutes"));
 app.use("/api/subscriptions", require("./routes/subscriptionroutes"));
 app.use("/api", reviewRoutes);
+
+app.use("/api/chefinfo", require("./routes/chefinforoutes"));
+
+app.use("/api/cheforders", require("./routes/chefordersroutes"));
+app.use("/api/reports", require("./routes/reportsroutes"));
+app.use("/api/userprofile", require("./routes/userprofileroutes"));
 app.use("/api/recipes", recipeRoutes);
 app.use("/posts", postRoutes);
 

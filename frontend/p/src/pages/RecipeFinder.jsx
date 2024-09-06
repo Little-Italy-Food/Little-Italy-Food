@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import Slider from "react-slick";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { Mic, Plus, X, Search, Download } from "lucide-react";
 
 const Button = ({ children, className, ...props }) => (
   <button
-    className={`px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${className}`}
+    className={`px-4 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 transition-transform transform hover:scale-105 ${className}`}
     {...props}
   >
     {children}
@@ -14,14 +15,14 @@ const Button = ({ children, className, ...props }) => (
 
 const Input = ({ className, ...props }) => (
   <input
-    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-shadow shadow-sm ${className}`}
     {...props}
   />
 );
 
 const Badge = ({ children, className, ...props }) => (
   <span
-    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}
+    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-colors ${className}`}
     {...props}
   >
     {children}
@@ -30,7 +31,7 @@ const Badge = ({ children, className, ...props }) => (
 
 const Card = ({ children, className, ...props }) => (
   <div
-    className={`bg-white shadow-md rounded-lg overflow-hidden ${className}`}
+    className={`bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 ${className}`}
     {...props}
   >
     {children}
@@ -41,11 +42,11 @@ const Dialog = ({ open, onClose, children }) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-auto">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-auto shadow-xl transform transition-transform scale-105">
         <button
           onClick={onClose}
-          className="float-right text-gray-500 hover:text-gray-700"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
         >
           <X className="w-6 h-6" />
         </button>
@@ -150,51 +151,84 @@ const RecipeFinder = () => {
     saveAs(blob, `${selectedRecipe.title}.txt`);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white p-4 sm:p-8">
-      <div className="w-full max-w-7xl mx-auto">
-        <h1 className="text-5xl sm:text-6xl font-extrabold text-center text-orange-700 mb-10">
-          Recipe Finder
-        </h1>
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    arrows: false,
+  };
 
-        {/* Instruction Section */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-2xl font-bold text-orange-700 mb-4">
-            How to Use:
+  const sliderImages = [
+    "./src/assets/food7.jpg",
+    "./src/assets/food8.jpg",
+    "./src/assets/food9.jpg",
+    "./src/assets/food10.jpg",
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white p-6 sm:p-10">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Hero Slider */}
+        {/* Hero Slider */}
+        <Slider {...sliderSettings} className="mb-12">
+          {sliderImages.map((image, index) => (
+            <div key={index} className="h-96 relative">
+              <img
+                src={image}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover rounded-lg shadow-lg"
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+              {/* Text Overlay */}
+              <h1 className="absolute inset-0 flex items-center justify-center text-5xl sm:text-6xl font-extrabold text-white">
+                Recipe Finder
+              </h1>
+            </div>
+          ))}
+        </Slider>
+
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-10">
+          <h2 className="text-2xl font-bold text-orange-700 mb-6">
+            How to Use
           </h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-gray-700 mb-4 leading-relaxed">
             Welcome to Recipe Finder! Start by entering ingredients you have on
-            hand in the input field. You can add multiple ingredients, and we'll
-            help you find recipes that you can make with them.
+            hand. You can add multiple ingredients, and we'll help you find
+            recipes that you can make with them.
           </p>
-          <p className="text-gray-700 mb-4">
+          <p className="text-gray-700 mb-4 leading-relaxed">
             You can also use voice input to add ingredients quickly. Just click
             the microphone icon and speak your ingredient.
           </p>
-          <p className="text-gray-700">
+          <p className="text-gray-700 leading-relaxed">
             Once you've added your ingredients, click "Search Recipes" to find
             recipes. Click on a recipe card to see more details, download the
             recipe, or explore similar recipes.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Enter an ingredient"
-            className="flex-grow border border-orange-300 focus:border-orange-500 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:ring-2 focus:ring-orange-500 transition-all"
+            className="flex-grow focus:border-orange-500"
           />
           <Button
             onClick={handleAddIngredient}
-            className="bg-orange-500 text-white hover:bg-orange-600 rounded-lg shadow-lg transition-transform transform hover:scale-105 flex items-center"
+            className="bg-orange-600 text-white hover:bg-orange-700"
           >
             <Plus className="w-5 h-5 mr-2 inline" />
             Add
           </Button>
           <Button
             onClick={handleVoiceInput}
-            className="bg-orange-400 text-white hover:bg-orange-500 relative rounded-lg shadow-lg transition-transform transform hover:scale-105 flex items-center"
+            className="bg-orange-400 text-white hover:bg-orange-500 relative"
           >
             <Mic
               className={`w-5 h-5 inline ${isListening ? "text-red-500" : ""}`}
@@ -205,36 +239,39 @@ const RecipeFinder = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-6">
-          {ingredients.map((ing, index) => (
-            <Badge
-              key={index}
-              className="bg-orange-100 text-orange-700 border border-orange-300 rounded-lg px-3 py-1"
-            >
-              {ing}
-              <button
-                onClick={() => handleDeleteIngredient(ing)}
-                className="ml-2 text-red-500 hover:text-red-700"
+        {ingredients.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            {ingredients.map((ingredient) => (
+              <Badge
+                key={ingredient}
+                className="bg-orange-100 text-orange-600 border-orange-600"
               >
-                <X className="w-4 h-4 inline" />
-              </button>
-            </Badge>
-          ))}
-        </div>
+                {ingredient}
+                <button
+                  onClick={() => handleDeleteIngredient(ingredient)}
+                  className="ml-2 text-orange-600 hover:text-orange-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <Button
           onClick={handleFindRecipes}
-          className="w-full bg-orange-600 text-white hover:bg-orange-700 rounded-lg shadow-lg transition-transform transform hover:scale-105 mb-8 flex items-center"
+          className="bg-orange-600 text-white hover:bg-orange-700 w-full sm:w-auto mx-auto block py-3 px-6 rounded-lg shadow-lg transform hover:-translate-y-1 transition-transform duration-300 ease-in-out flex items-center justify-center"
         >
           <Search className="w-5 h-5 mr-2 inline" />
           Search Recipes
         </Button>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Recipe Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
           {recipes.map((recipe) => (
             <Card
               key={recipe.id}
-              className="cursor-pointer hover:shadow-xl transition-shadow bg-white border border-gray-200 rounded-lg overflow-hidden transform hover:scale-105"
+              className="cursor-pointer"
               onClick={() => handleRecipeClick(recipe.id)}
             >
               <img
@@ -243,92 +280,77 @@ const RecipeFinder = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h3 className="font-bold text-lg text-center text-orange-700">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   {recipe.title}
                 </h3>
+                <p className="text-gray-500">
+                  Uses {recipe.usedIngredientCount} ingredients from your list
+                </p>
               </div>
             </Card>
           ))}
         </div>
+
+        {/* Recipe Details Dialog */}
+        {selectedRecipe && (
+          <Dialog
+            open={Boolean(selectedRecipe)}
+            onClose={() => setSelectedRecipe(null)}
+          >
+            <h2 className="text-3xl font-bold mb-4">{selectedRecipe.title}</h2>
+            <p className="text-gray-600 mb-4">
+              Ready in {selectedRecipe.readyInMinutes} minutes | Serves{" "}
+              {selectedRecipe.servings}
+            </p>
+            <h3 className="text-xl font-semibold mb-3">Ingredients</h3>
+            <ul className="list-disc list-inside mb-6">
+              {selectedRecipe.extendedIngredients.map((ingredient) => (
+                <li key={ingredient.id} className="text-gray-800">
+                  {ingredient.original}
+                </li>
+              ))}
+            </ul>
+            <h3 className="text-xl font-semibold mb-3">Instructions</h3>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              {selectedRecipe.instructions}
+            </p>
+            <Button
+              onClick={handleDownloadRecipe}
+              className="bg-orange-600 text-white hover:bg-orange-700"
+            >
+              <Download className="w-5 h-5 mr-2 inline" />
+              Download Recipe
+            </Button>
+
+            <h3 className="text-xl font-semibold mt-10 mb-4">
+              Similar Recipes
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similarRecipes.map((recipe) => (
+                <Card
+                  key={recipe.id}
+                  className="cursor-pointer"
+                  onClick={() => handleRecipeClick(recipe.id)}
+                >
+                  <img
+                    src={`https://spoonacular.com/recipeImages/${recipe.id}-312x231.jpg`}
+                    alt={recipe.title}
+                    className="w-full h-36 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">
+                      {recipe.title}
+                    </h4>
+                    <p className="text-gray-500">
+                      Ready in {recipe.readyInMinutes} minutes
+                    </p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Dialog>
+        )}
       </div>
-
-      <Dialog open={!!selectedRecipe} onClose={() => setSelectedRecipe(null)}>
-        <div className="bg-white p-8 rounded-lg shadow-2xl max-w-4xl mx-auto transition-transform transform hover:scale-105">
-          <h2 className="text-3xl font-extrabold text-orange-700 mb-6">
-            {selectedRecipe?.title}
-          </h2>
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/2">
-              <img
-                src={selectedRecipe?.image}
-                alt={selectedRecipe?.title}
-                className="w-full h-64 object-cover rounded-lg mb-6"
-              />
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <p className="font-semibold text-orange-700">Ready in:</p>
-                  <p>{selectedRecipe?.readyInMinutes} minutes</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-orange-700">Servings:</p>
-                  <p>{selectedRecipe?.servings}</p>
-                </div>
-              </div>
-              <Button
-                onClick={handleDownloadRecipe}
-                className="w-full bg-orange-500 text-white hover:bg-orange-600 rounded-lg shadow-lg transition-transform transform hover:scale-105 mb-4 flex items-center"
-              >
-                <Download className="w-5 h-5 mr-2 inline" />
-                Download Recipe
-              </Button>
-            </div>
-            <div className="md:w-1/2">
-              <div className="mb-6">
-                <h3 className="font-bold text-xl text-orange-700 mb-3">
-                  Ingredients:
-                </h3>
-                <ul className="list-disc ml-6">
-                  {selectedRecipe?.extendedIngredients.map((ingredient) => (
-                    <li key={ingredient.id} className="text-gray-700">
-                      {ingredient.original}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mb-6">
-                <h3 className="font-bold text-xl text-orange-700 mb-3">
-                  Instructions:
-                </h3>
-                <p className="text-gray-700">{selectedRecipe?.instructions}</p>
-              </div>
-            </div>
-          </div>
-
-          <h3 className="font-bold text-2xl text-orange-700 mt-6 mb-4">
-            Similar Recipes:
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {similarRecipes.map((similarRecipe) => (
-              <Card
-                key={similarRecipe.id}
-                className="cursor-pointer hover:shadow-xl transition-shadow bg-white border border-gray-200 rounded-lg overflow-hidden transform hover:scale-105"
-                onClick={() => handleRecipeClick(similarRecipe.id)}
-              >
-                <img
-                  src={`https://spoonacular.com/recipeImages/${similarRecipe.id}-312x231.jpg`}
-                  alt={similarRecipe.title}
-                  className="w-full h-32 object-cover"
-                />
-                <div className="p-3">
-                  <h3 className="font-semibold text-center text-sm text-orange-700">
-                    {similarRecipe.title}
-                  </h3>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </Dialog>
     </div>
   );
 };

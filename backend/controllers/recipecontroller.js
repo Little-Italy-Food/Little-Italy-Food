@@ -547,3 +547,39 @@ exports.getRecipesByChefId = async (req, res) => {
       .json({ message: "An error occurred while fetching recipes." });
   }
 };
+
+exports.getSavedRecipesByUserId = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.user.id;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const savedRecipes = await SavedRecipe.find({
+      userId: userObjectId,
+    }).populate("recipes");
+
+    console.log(
+      "Number of saved recipes found for userId:",
+      savedRecipes.length
+    );
+
+    if (savedRecipes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No saved recipes found for this user." });
+    }
+
+    res.json(savedRecipes);
+  } catch (error) {
+    console.error("Error fetching saved recipes:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching saved recipes." });
+  }
+};
