@@ -7,6 +7,7 @@ import NumberInputModel from "../components/model/NumberInputModel";
 import CuisineType from "../components/CuisineType";
 import Review from "../components/ReviewAndComment";
 import Modal from "../components/model/ModelImage";
+import { Play, Square } from "lucide-react";
 
 const RecipeView = () => {
   const location = useLocation();
@@ -386,8 +387,8 @@ const RecipeView = () => {
 
   return (
     <div className=" bg-orange-50">
-      <div className="lg:px-32 mx-auto bg-orange-50 rounded-xl shadow-md overflow-hidden mt-1 ">
-        <div className="relative w-full h-96 shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out rounded-xl overflow-hidden">
+      <div className="lg:px-16  mx-auto bg-orange-50 rounded-xl shadow-md overflow-hidden mt-1 ">
+        <div className="relative w-full h-[450px] shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out rounded-xl overflow-hidden">
           <img
             className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
             src={`http://localhost:5001/${recipe.mainImage}`}
@@ -480,7 +481,7 @@ const RecipeView = () => {
           </div>
         )}
 
-        <div className="p-8 bg-white rounded-xl shadow-lg">
+        <div className="p-8  rounded-xl shadow-lg">
           {/* Tags Section */}
           <div className="flex flex-wrap gap-3 mb-5">
             {[
@@ -525,29 +526,31 @@ const RecipeView = () => {
           <div className="mb-8 bg-gray-50 p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-gray-900">Description</h2>
-              <div>
+              <div className="flex space-x-2">
                 <button
                   onClick={() =>
                     speakText(
                       `${recipe.comprehensiveDescription} ${recipe.briefDescription}`
                     )
                   }
-                  className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-2 rounded-lg shadow-md hover:scale-105 transition"
+                  className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-2 rounded-lg shadow-md hover:scale-105 transition flex items-center"
                 >
-                  Read Aloud
+                  <Play size={18} className="mr-2" />
                 </button>
                 <button
                   onClick={stopSpeech}
-                  className="bg-red-500 text-white p-2 rounded-lg ml-2 shadow-md hover:scale-105 transition"
+                  className="bg-red-500 text-white p-2 rounded-lg shadow-md hover:scale-105 transition flex items-center"
                 >
-                  Stop
+                  <Square size={18} className="mr-2" />
                 </button>
               </div>
             </div>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              {recipe.comprehensiveDescription}
-            </p>
-            <p className="text-gray-700">{recipe.briefDescription}</p>
+            <div className="flex space-x-4">
+              <p className="text-gray-700 leading-relaxed">
+                {recipe.comprehensiveDescription}
+              </p>
+              <p className="text-gray-700">{recipe.briefDescription}</p>
+            </div>
           </div>
 
           {/* Number Input */}

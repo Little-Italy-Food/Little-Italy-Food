@@ -111,7 +111,7 @@ function SubstituteFinder() {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-10 mt-8">
+      <div className="w-full max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-10 mt-8 mb-20">
         <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
           Easily Find Substitutions for Your Ingredients
         </h1>

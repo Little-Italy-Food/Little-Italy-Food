@@ -11,7 +11,6 @@ const postSchema = new Schema(
     },
     img: {
       type: String, // Store image URL or file path
-      required: true,
     },
     desc: {
       type: String,
@@ -19,10 +18,12 @@ const postSchema = new Schema(
     },
     video: String,
 
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Users",
+      },
+    ],
     liked: {
       type: Boolean,
       default: false,

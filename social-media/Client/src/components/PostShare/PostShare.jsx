@@ -42,14 +42,13 @@ const PostShare = () => {
     const response = await fetch("http://localhost:5001/posts/create", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${userToken}`, // Token for authentication
+        Authorization: `Bearer ${userToken}`,
       },
       body: formData,
     });
 
     const result = await response.json();
     if (result.success) {
-      // Handle success, maybe reset form or display a success message
       setMedia([]);
       setDescription("");
       console.log("Post created successfully", result.post);
@@ -67,7 +66,7 @@ const PostShare = () => {
           type="text"
           placeholder="What's happening"
           value={description}
-          onChange={(e) => setDescription(e.target.value)} // Update description state
+          onChange={(e) => setDescription(e.target.value)}
         />
         <div className="postOptions">
           <div
