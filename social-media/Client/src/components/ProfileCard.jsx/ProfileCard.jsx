@@ -1,10 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cover from "../../img/6.jpg";
 import Profile from "../../img/5.jpeg";
 import "./ProfileCard.css";
 
 const ProfileCard = () => {
   const ProfilePage = true;
+
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        console.error("User ID not found in local storage.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:5001/posts/user/${userId}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setUserData(data);
+        } else {
+          console.error("Failed to fetch user data:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="ProfileCard">
       <div className="ProfileImages">
@@ -13,10 +50,12 @@ const ProfileCard = () => {
       </div>
 
       <div className="ProfileName">
-        <span>Islam Omar</span>
+        <div className="ProfileName">
+          <span>{userData ? userData.username : "Loading..."}</span>
+        </div>{" "}
         <span>
-          Hi, I'm Islam Omar, a recipe creator who loves crafting healthy,
-          delicious dishes.
+          Hi, I'm {userData ? userData.username : "Loading..."}, a recipe
+          creator who loves crafting healthy, delicious dishes.
         </span>
       </div>
 

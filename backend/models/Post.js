@@ -1,6 +1,20 @@
-// models/Post.js
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+
+const replySchema = new Schema(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "Users",
+      required: true,
+    },
+    desc: {
+      type: String,
+      required: false,
+    },
+  },
+  { timestamps: true }
+);
 
 const postSchema = new Schema(
   {
@@ -10,14 +24,13 @@ const postSchema = new Schema(
       required: true,
     },
     img: {
-      type: String, // Store image URL or file path
+      type: String,
     },
     desc: {
       type: String,
       required: true,
     },
     video: String,
-
     likedBy: [
       {
         type: Schema.Types.ObjectId,
@@ -27,6 +40,33 @@ const postSchema = new Schema(
     liked: {
       type: Boolean,
       default: false,
+    },
+    userMentions: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "Users",
+        },
+      },
+    ],
+    sentTo: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Users",
+      },
+    ],
+    chefMentions: [
+      {
+        chefId: {
+          type: Schema.Types.ObjectId,
+          ref: "Chefs",
+        },
+      },
+    ],
+    replies: [replySchema],
+    sharedFrom: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
     },
   },
   { timestamps: true }

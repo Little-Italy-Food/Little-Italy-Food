@@ -37,6 +37,8 @@ function LogIn() {
         }
       );
       localStorage.setItem("accessToken", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+
       navigate("/home");
     } catch (error) {
       console.error("Login failed", error);
