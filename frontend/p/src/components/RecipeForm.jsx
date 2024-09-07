@@ -63,7 +63,7 @@ const RecipeForm = () => {
     if (name === "subImages") {
       setFiles((prevFiles) => ({
         ...prevFiles,
-        [name]: Array.from(selectedFiles), // Convert FileList to an array
+        [name]: Array.from(selectedFiles),
       }));
     } else {
       setFiles((prevFiles) => ({
@@ -120,13 +120,13 @@ const RecipeForm = () => {
     if (files.mainImage) data.append("mainImage", files.mainImage[0]);
 
     if (Array.isArray(files.subImages)) {
-      files.subImages.forEach((file, index) => data.append(`subImages`, file)); // Ensure correct field name
+      files.subImages.forEach((file, index) => data.append(`subImages`, file));
     }
 
     if (files.video) data.append("video", files.video[0]);
 
     try {
-      const token = localStorage.getItem("token"); // Retrieve token from local storage or any other storage method
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:5001/api/recipes/recipes",
         data,
@@ -149,7 +149,7 @@ const RecipeForm = () => {
       className="p-6 bg-white shadow-md rounded-lg  "
       onSubmit={handleSubmit}
     >
-      {/* Your form fields */}
+      {/* MY form fields */}
       {/* Recipe Name */}
       <div className="mb-4">
         <label className="block text-gray-700 font-medium mb-2">
@@ -178,7 +178,7 @@ const RecipeForm = () => {
         />
       </div>
 
-      {/* Ingredients Section */}
+      {/*fullll Ingredients Section */}
       <div className="mb-6">
         <label className="block text-gray-700 font-medium mb-2">
           Ingredients

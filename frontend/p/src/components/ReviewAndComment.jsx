@@ -191,7 +191,7 @@ const ReviewAndComment = ({ id }) => {
 
   return (
     <>
-      <div className="lg:px-32 px-10 mx-auto p-6 bg-white rounded-lg shadow-lg mt-12">
+      <div className="lg:px-32 px-10 mx-auto p-6 bg-white rounded-lg shadow-lg mt-12 mb-12">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
           Reviews
         </h1>

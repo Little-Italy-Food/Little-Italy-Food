@@ -24,7 +24,12 @@ const Posts = () => {
       }
     };
 
-    fetchPosts();
+    // Polling every 5 seconds to get the latest posts
+    const intervalId = setInterval(fetchPosts, 5000);
+    fetchPosts(); // Initial fetch on component mount
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loading) return <p>Loading...</p>;

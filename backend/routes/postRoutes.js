@@ -2,7 +2,11 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/upload");
-const { createPost, getAllPosts } = require("../controllers/postController");
+const {
+  createPost,
+  getAllPosts,
+  likePost,
+} = require("../controllers/postController");
 
 router.post(
   "/create",
@@ -14,5 +18,6 @@ router.post(
 );
 
 router.get("/allposts", getAllPosts);
+router.post("/like", likePost);
 
 module.exports = router;
