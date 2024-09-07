@@ -24,11 +24,9 @@ const Posts = () => {
       }
     };
 
-    // Polling every 5 seconds to get the latest posts
     const intervalId = setInterval(fetchPosts, 5000);
-    fetchPosts(); // Initial fetch on component mount
+    fetchPosts();
 
-    // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
 
@@ -37,7 +35,16 @@ const Posts = () => {
   return (
     <div className="Posts">
       {posts.map((post) => (
-        <Post key={post._id} data={{ ...post, name: post.userId.username }} />
+        <Post
+          key={post._id}
+          data={{
+            ...post,
+            name:
+              post.userId && post.userId.username
+                ? post.userId.username
+                : "Anonymous",
+          }}
+        />
       ))}
     </div>
   );
