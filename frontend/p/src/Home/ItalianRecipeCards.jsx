@@ -7,7 +7,7 @@ const RecipeCards = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/recipes")
+      .get("http://localhost:5001/api/recipes/recipes-get")
       .then((response) => {
         setRecipes(response.data); //احدث الرسبي بلبيانات المستلمه
       })

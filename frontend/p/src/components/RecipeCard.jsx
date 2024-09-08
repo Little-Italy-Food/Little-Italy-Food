@@ -100,7 +100,7 @@ const RecipeCard = ({ recipe }) => {
   return (
     <>
       <div
-        className="relative w-full h-96 bg-gray-200 flex items-center justify-center text-black rounded-lg overflow-hidden"
+        className="relative w-full h-[30rem] bg-gray-200 flex items-center justify-center text-black rounded-lg overflow-hidden"
         style={{
           perspective: "2000px",
         }}
@@ -108,7 +108,7 @@ const RecipeCard = ({ recipe }) => {
         onMouseLeave={handleMouseLeave}
       >
         <div
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center h-[30rem] "
           style={{
             transition: "transform 0.5s",
             transformOrigin: "left",
@@ -137,11 +137,11 @@ const RecipeCard = ({ recipe }) => {
             <p className="text-md text-white">Click to flip</p>
           </div>
         </div>
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 h-[30rem]">
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">
             {recipe.name}
           </h2>
-          <p className="text-md text-gray-700 mb-4">
+          <p className="text-md text-gray-700 mb-4 ">
             {recipe.briefDescription}
           </p>
           <Link

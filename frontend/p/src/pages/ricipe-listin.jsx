@@ -167,13 +167,13 @@ const RecipeCards = () => {
           className="absolute inset-0 w-full h-[30rem] object-cover"
         />
 
-        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px] " />
 
         <div className="relative z-50 h-[30rem] max-w-6xl mx-auto flex flex-col justify-center items-center text-center text-white p-6"></div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto py-10 ">
         {/* Search and Filters Section */}
         <div className="mb-10 px-4 lg:px-20">
           <SearchBar

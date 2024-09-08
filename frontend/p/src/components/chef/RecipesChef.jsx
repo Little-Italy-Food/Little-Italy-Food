@@ -21,10 +21,10 @@ const RecipePage = React.forwardRef((props, ref) => {
 
   return (
     <div
-      className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg"
+      className="max-w-4xl mx-auto p-6 h-auto bg-white shadow-lg rounded-lg"
       ref={ref}
     >
-      <div className="space-y-6">
+      <div className="space-y-6 h-[150rem]">
         <h2 className="text-3xl font-bold text-gray-800">{recipe.name}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -198,11 +198,11 @@ const RecipesChef = ({ id }) => {
     <div className="recipe-book-container">
       <HTMLFlipBook
         width={600}
-        height={1300}
+        height={2000}
         minWidth={315}
         maxWidth={1000}
         minHeight={400}
-        maxHeight={1350}
+        maxHeight={1500}
         showCover={true}
         flippingTime={1000}
         style={{ margin: "0 auto" }}

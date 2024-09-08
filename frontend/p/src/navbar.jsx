@@ -11,7 +11,7 @@ import {
   FaBars,
 } from "react-icons/fa";
 import { CartContext } from "../src/cartcontext";
-import logo from "../src/assets/logo.png";
+import logo from "../src/assets/logo(2).png";
 import axios from "axios";
 
 const Navbar = () => {
@@ -137,11 +137,8 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between">
           <div className="flex space-x-7">
-            <Link to="/" className="flex items-center py-4 px-2">
-              <img src={logo} alt="Logo" className="h-8 w-8 mr-2" />
-              <span className="font-semibold text-gray-500 text-lg">
-                Little Italy
-              </span>
+            <Link to="/" className="flex items-center py-4 ">
+              <img src={logo} alt="Logo" className="h-20 w-35 mr-10" />
             </Link>
             <div className="hidden md:flex items-center space-x-1">
               <Link
