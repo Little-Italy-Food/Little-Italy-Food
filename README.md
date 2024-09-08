@@ -1,7 +1,7 @@
 
 ## Project Overview
 
-**Dynamic Recipe Hub** is a fully responsive web application designed to help users organize, manage, share, and purchase dishes from a variety of chefs. This feature-rich platform allows users to create personalized digital cookbooks, explore new recipes, engage with a community of cooking enthusiasts, and buy dishes directly from chefs. It combines recipe management with an e-commerce marketplace, catering to both culinary creators and food lovers.
+**Little-Italy-Food** is a fully responsive web application designed to help users organize, manage, share, and purchase dishes from a variety of chefs. This feature-rich platform allows users to create personalized digital cookbooks, explore new recipes, engage with a community of cooking enthusiasts, and buy dishes directly from chefs. It combines recipe management with an e-commerce marketplace, catering to both culinary creators and food lovers.
 
 ## Types of Users
 
