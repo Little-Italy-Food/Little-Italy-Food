@@ -131,7 +131,9 @@ const RecipeCard = ({ recipe }) => {
             <h2 className="text-xl font-semibold text-white mb-2">
               {recipe.name}
             </h2>
-            <p className="text-md text-white mb-4">{recipe.briefDescription}</p>
+            <p className="text-md text-white mb-4 text-center p-3">
+              {recipe.briefDescription}
+            </p>
             <p className="text-md text-white">Click to flip</p>
           </div>
         </div>

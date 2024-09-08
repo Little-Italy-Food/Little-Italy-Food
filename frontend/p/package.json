@@ -25,6 +25,7 @@
     "react-pageflip": "^2.0.3",
     "react-paginate": "^8.2.0",
     "react-router-dom": "^6.26.1",
+    "react-scroll-parallax": "^3.4.5",
     "react-slick": "^0.30.2",
     "react-spring": "^9.7.4",
     "react-toastify": "^10.0.5",

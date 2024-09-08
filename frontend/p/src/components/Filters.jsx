@@ -105,6 +105,24 @@ const Filters = ({ onFilterChange }) => {
     </div>
   );
 
+  const medalsData = [
+    {
+      src: m1,
+      title: "Title for m1",
+      text: "This is static text for m1.",
+    },
+    {
+      src: m2,
+      title: "Title for m2",
+      text: "This is static text for m2.",
+    },
+    {
+      src: m3,
+      title: "Title for m3",
+      text: "This is static text for m3.",
+    },
+  ];
+
   const CheckboxSection = ({ label, checked, onChange }) => (
     <div className="flex items-center mb-1 mt-7 ">
       <input
@@ -257,20 +275,14 @@ const Filters = ({ onFilterChange }) => {
         </div>
 
         <div className="flex justify-center space-x-4 mt-6">
-          {[m1, m2, m3].map((medal, index) => (
+          {medalsData.map((medal, index) => (
             <div
               key={index}
               className="medal text-yellow-800 rounded-md cursor-pointer transition-transform hover:scale-110"
-              onClick={() =>
-                openModal(
-                  medal,
-                  `Title for m${index + 1}`,
-                  `This is static text for m${index + 1}.`
-                )
-              }
+              onClick={() => openModal(medal.src, medal.title, medal.text)}
             >
               <img
-                src={medal}
+                src={medal.src}
                 alt={`Medal ${index + 1}`}
                 className="w-24 h-24"
               />

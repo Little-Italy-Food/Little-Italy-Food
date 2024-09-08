@@ -24,10 +24,11 @@ import RecipeCards from "./pages/ricipe-listin";
 import ContactUs from "./contact/contact";
 import Chefinfo from "./chefinfo";
 import UserProfile from "./userprofile";
+import Footer from "./pages/Footer";
+import AboutUs from "./pages/About";
 
 import SavedRecipe from "./pages/SavedRecipe";
 
-// New component to wrap routes that should include the Navbar
 const NavbarWrapper = ({ children }) => (
   <>
     <Navbar />
@@ -62,15 +63,79 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/SavedRecipe" element={<SavedRecipe />} />
-                <Route path="/dishespage" element={<DishesPage />} />
-                <Route path="/dish/:id" element={<DishDetailsPage />} />
-                <Route path="/cart" element={<Cart />} />
+                <Route
+                  path="/SavedRecipe"
+                  element={
+                    <NavbarWrapper>
+                      <SavedRecipe />
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/about"
+                  element={
+                    <NavbarWrapper>
+                      <AboutUs />
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/dishespage"
+                  element={
+                    <NavbarWrapper>
+                      <DishesPage />{" "}
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/dish/:id"
+                  element={
+                    <NavbarWrapper>
+                      <DishDetailsPage />{" "}
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/cart"
+                  element={
+                    <NavbarWrapper>
+                      <Cart />{" "}
+                    </NavbarWrapper>
+                  }
+                />
 
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/recipes" element={<RecipeCards />} />
-                <Route path="/" element={<Home />} />
-                <Route path="/add-recipe" element={<AddRecipe />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <NavbarWrapper>
+                      <Checkout />{" "}
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/recipes"
+                  element={
+                    <NavbarWrapper>
+                      <RecipeCards />{" "}
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/"
+                  element={
+                    <NavbarWrapper>
+                      <Home />
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/add-recipe"
+                  element={
+                    <NavbarWrapper>
+                      <AddRecipe />{" "}
+                    </NavbarWrapper>
+                  }
+                />
                 <Route
                   path="/chef"
                   element={
@@ -188,18 +253,44 @@ function App() {
                   element={<Navigate to="/dishespage" replace />}
                 />
 
-                <Route path="/chef/info" element={<Chefinfo />} />
+                <Route
+                  path="/chef/info"
+                  element={
+                    <NavbarWrapper>
+                      <Chefinfo />{" "}
+                    </NavbarWrapper>
+                  }
+                />
 
-                <Route path="/recipe1/:id" element={<RecipeView />} />
-                <Route path="/recipe-finder" element={<RecipeFinder />} />
+                <Route
+                  path="/recipe1/:id"
+                  element={
+                    <NavbarWrapper>
+                      <RecipeView />{" "}
+                    </NavbarWrapper>
+                  }
+                />
+                <Route
+                  path="/recipe-finder"
+                  element={
+                    <NavbarWrapper>
+                      <RecipeFinder />{" "}
+                    </NavbarWrapper>
+                  }
+                />
                 <Route
                   path="/substitute-finder"
-                  element={<SubstituteFinder />}
+                  element={
+                    <NavbarWrapper>
+                      <SubstituteFinder />{" "}
+                    </NavbarWrapper>
+                  }
                 />
               </Routes>
               <ToastContainer />
             </div>
           </Router>
+          <Footer />
         </CartProvider>
       </UserProvider>
     </PayPalScriptProvider>
