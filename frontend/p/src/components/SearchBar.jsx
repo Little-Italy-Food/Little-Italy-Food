@@ -5,7 +5,7 @@ const SearchBar = ({ onSearch, onVoiceSearch }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="flex justify-center w-full max-w-3xl mx-auto absolute top-[5rem] left-[23rem] z-50">
+    <div className="flex justify-center w-full max-w-3xl mx-auto absolute top-[13rem] left-[23rem] z-50 ">
       <div
         className={`bg-white flex w-full px-4 py-3 rounded-full border-2 transition-all duration-300 ease-in-out ${
           isFocused ? "border-[#FF5733] shadow-lg" : "border-gray-300 shadow-md"

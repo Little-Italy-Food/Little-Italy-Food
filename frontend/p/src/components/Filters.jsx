@@ -124,7 +124,7 @@ const Filters = ({ onFilterChange }) => {
   ];
 
   const CheckboxSection = ({ label, checked, onChange }) => (
-    <div className="flex items-center mb-1 mt-7 ">
+    <div className="flex items-center mb-1 mt-7  ">
       <input
         type="checkbox"
         checked={checked}
