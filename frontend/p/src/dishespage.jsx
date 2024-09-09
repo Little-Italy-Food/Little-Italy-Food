@@ -8,6 +8,8 @@ import { useSpring, animated } from "react-spring";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
+const ITEMS_PER_PAGE = 6;
+
 const DishesPage = () => {
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +17,16 @@ const DishesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceRange, setPriceRange] = useState([0, 50]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+
+  // Slice dishes for the current page
+  const paginatedDishes = dishes.slice(startIndex, endIndex);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(dishes.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     const fetchDishes = async () => {
@@ -70,7 +82,7 @@ const DishesPage = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-2xl font-bold text-green-700"
+          className="text-2xl font-bold text-orange-700"
         >
           Loading dishes...
         </motion.div>
@@ -93,18 +105,13 @@ const DishesPage = () => {
   }
 
   return (
-    <animated.div
-      style={fadeIn}
-      className="min-h-screen bg-gradient-to-b from-green-100 via-white to-red-100"
-    >
- 
-
+    <animated.div style={fadeIn} className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-5xl font-bold text-center mb-12 text-green-700 font-serif"
+          className="text-5xl font-bold text-center mb-12 text-orange-700 font-serif"
         >
           Piatti Deliziosi
         </motion.h1>
@@ -113,9 +120,9 @@ const DishesPage = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col md:flex-row justify-between mb-8 space-y-4 md:space-y-0 md:space-x-4"
+          className="flex flex-col md:flex-row md:justify-between mb-8 lg:px-20 space-y-4 md:space-y-0 md:space-x-4"
         >
-          <div className="flex items-center bg-white rounded-full shadow-md p-2">
+          <div className="flex items-center bg-white rounded-full shadow-md md:w-1/3">
             <label htmlFor="category" className="sr-only">
               Filter by Category
             </label>
@@ -123,7 +130,7 @@ const DishesPage = () => {
               id="category"
               value={selectedCategory}
               onChange={handleCategoryChange}
-              className="appearance-none bg-transparent border-none px-4 py-2 pr-8 rounded-full focus:outline-none"
+              className="appearance-none bg-transparent border-none px-4 py-2 rounded-full focus:outline-none w-full"
             >
               <option value="All">All Categories</option>
               <option value="pasta">Pasta</option>
@@ -133,14 +140,25 @@ const DishesPage = () => {
             </select>
           </div>
 
-          <div className="flex-1 max-w-sm">
+          <div className="relative md:w-1/3">
+            <input
+              type="text"
+              placeholder="Search dishes..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-orange-300 focus:outline-none focus:border-orange-500 transition-colors duration-300"
+            />
+            <Search className="absolute left-3 top-[1.3rem] transform -translate-y-1/2 text-gray-400" />
+          </div>
+
+          <div className="flex-1 max-w-sm md:w-1/3 ">
             <Slider
               range
               min={0}
               max={50}
               defaultValue={priceRange}
               onChange={handleSliderChange}
-              trackStyle={[{ backgroundColor: "#34d399" }]}
+              trackStyle={[{ backgroundColor: "#FF5733" }]}
               handleStyle={[
                 { backgroundColor: "#2a9d8f", borderColor: "#2a9d8f" },
                 { backgroundColor: "#2a9d8f", borderColor: "#2a9d8f" },
@@ -152,17 +170,6 @@ const DishesPage = () => {
               <span>€{priceRange[1]}</span>
             </div>
           </div>
-
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search dishes..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-green-300 focus:outline-none focus:border-green-500 transition-colors duration-300"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
         </motion.div>
 
         <AnimatePresence>
@@ -171,9 +178,9 @@ const DishesPage = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 sm:px-6 md:px-8 lg:px-20"
           >
-            {filteredDishes.map((dish) => (
+            {paginatedDishes.map((dish) => (
               <motion.div
                 key={dish._id}
                 layout
@@ -181,7 +188,7 @@ const DishesPage = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-green-200 transform hover:scale-105"
+                className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-orange-200 transform hover:scale-105"
               >
                 <div className="relative pt-[75%]">
                   <img
@@ -213,14 +220,14 @@ const DishesPage = () => {
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <Euro className="w-4 h-4 text-green-500 mr-1" />
-                    <span className="font-bold text-green-700">
+                    <Euro className="w-4 h-4 text-orange-500 mr-1" />
+                    <span className="font-bold text-orange-700">
                       €{dish.price}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-green-50">
+                <div className="p-3 bg-orange-50">
                   <Link
                     to={`/dish/${dish._id}`}
                     className="block w-full text-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
@@ -233,7 +240,31 @@ const DishesPage = () => {
             ))}
           </motion.div>
         </AnimatePresence>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-orange-500 text-white rounded-l"
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 bg-orange-50 text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-orange-500 text-white rounded-r"
+          >
+            Next
+          </button>
+        </div>
       </div>
+      {/* </div> */}
     </animated.div>
   );
 };

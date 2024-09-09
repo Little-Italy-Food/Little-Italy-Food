@@ -291,7 +291,7 @@ const Filters = ({ onFilterChange }) => {
         </div>
       </div>
 
-      <div className="absolute top-[10rem] left-[22rem] z-50">
+      <div className="absolute top-[17rem] left-[22.5rem] z-50">
         <div className="font-sans p-4">
           <ul className="flex gap-4 bg-gray-100 rounded-2xl p-1 w-max overflow-hidden">
             {[

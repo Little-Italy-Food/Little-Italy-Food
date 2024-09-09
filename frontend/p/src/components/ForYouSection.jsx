@@ -12,7 +12,7 @@ const ForYou = () => {
 
   return (
     <>
-      <div className="container mx-auto mb-14 px-20 bg-orange-200 h-[31rem] rounded-lg ">
+      <div className="container mx-auto mb-14 px-20 bg-orange-200 h-[37rem] rounded-lg ">
         <h2 className="text-5xl text-center font-bold mb-4 pt-4">For You</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {recipes.length > 0 ? (

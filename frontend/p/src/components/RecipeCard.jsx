@@ -100,7 +100,7 @@ const RecipeCard = ({ recipe }) => {
   return (
     <>
       <div
-        className="relative w-full h-[30rem] bg-gray-200 flex items-center justify-center text-black rounded-lg overflow-hidden"
+        className="relative w-full h-[30rem]  flex items-center justify-center text-black rounded-lg overflow-hidden"
         style={{
           perspective: "2000px",
         }}
@@ -137,24 +137,19 @@ const RecipeCard = ({ recipe }) => {
             <p className="text-md text-white">Click to flip</p>
           </div>
         </div>
-        <div className="text-center mt-6 h-[30rem]">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+        <div className="text-center  h-[30rem] p-6 bg-orange-50  rounded-lg shadow-lg">
+          <h2 className="text-3xl font-extrabold text-black mb-3">
             {recipe.name}
           </h2>
-          <p className="text-md text-gray-700 mb-4 ">
-            {recipe.briefDescription}
-          </p>
-          <Link
-            to={{
-              pathname: `/recipe1/${recipe._id}`,
-              state: { recipe },
-            }}
-          >
-            <button className="px-5 py-3 text-md font-semibold text-white bg-[#FF5733] rounded-lg shadow-md hover:opacity-70 transition-colors duration-300">
+          <p className="text-lg text-black mb-6">{recipe.briefDescription}</p>
+
+          <Link to={`/recipe1/${recipe._id}`} state={{ recipe }}>
+            <button className="px-6 py-3 text-lg font-bold text-white bg-black  rounded-lg shadow-md hover:opacity-70 transition duration-300">
               View Recipe
             </button>
           </Link>
-          <div className="mt-4 flex flex-col items-center">
+
+          <div className="mt-6 flex flex-col items-center">
             <select
               value={creatingNewCollection ? "custom" : collectionName}
               onChange={(e) => {
@@ -167,7 +162,7 @@ const RecipeCard = ({ recipe }) => {
                   setCollectionName(value);
                 }
               }}
-              className="px-4 py-2 text-md font-medium bg-gray-200 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5733] transition-colors duration-300"
+              className="px-4 py-3 text-lg font-medium bg-white border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#FF5733] transition duration-300"
             >
               {!creatingNewCollection && (
                 <>
@@ -184,18 +179,20 @@ const RecipeCard = ({ recipe }) => {
               )}
               <option value="custom">Create New Collection</option>
             </select>
+
             {creatingNewCollection && (
               <input
                 type="text"
                 value={collectionName}
                 onChange={(e) => setCollectionName(e.target.value)}
                 placeholder="Enter new collection name"
-                className="mt-3 px-4 py-2 text-md font-medium border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5733] transition-colors duration-300"
+                className="mt-4 px-4 py-3 text-lg font-medium border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#FF5733] transition duration-300"
               />
             )}
+
             <button
               onClick={saveRecipe}
-              className="px-5 py-3 text-md font-semibold text-white bg-[#FF5733] rounded-lg shadow-md hover:opacity-70 transition-colors duration-300 mt-4"
+              className="mt-6 px-6 py-3 text-lg font-bold text-white bg-[#FF5733] rounded-lg shadow-md hover:opacity-70 transition duration-300"
             >
               Save Recipe
             </button>
