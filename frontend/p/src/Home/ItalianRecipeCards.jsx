@@ -1,109 +1,171 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { Clock, User, ChevronRight } from "lucide-react";
+import M1 from "../assets/new/qq-removebg-preview.png";
+import M2 from "../assets/new/cc-removebg-preview.png";
+import M3 from "../assets/new/dd-removebg-preview.png";
+
+const RecipeCard = ({
+  name,
+  briefDescription,
+  mainImage,
+  chef,
+  cookingTime,
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out transform hover:shadow-3xl hover:scale-105"
+      whileHover={{ y: -10 }}
+      transition={{ duration: 0.4 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      <div className="relative">
+        <img
+          src={`http://localhost:5001/${mainImage}`}
+          alt={name}
+          className="w-full h-60 object-cover rounded-t-2xl"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70" />
+        <h3 className="absolute bottom-4 left-4 text-2xl font-extrabold text-white drop-shadow-lg">
+          {name}
+        </h3>
+      </div>
+      <div className="p-6 space-y-4">
+        <p className="text-gray-600 text-sm mb-12 h-14 overflow-hidden">
+          {briefDescription}
+        </p>
+        <div className="flex justify-between items-center text-sm text-gray-500">
+          <div className="flex items-center">
+            <User size={18} className="mr-2 text-gray-700" />
+            <span>{chef ? chef.name : "Unknown Chef"}</span>
+          </div>
+          <div className="flex items-center">
+            <Clock size={18} className="mr-2 text-gray-700" />
+            <span>
+              {cookingTime.hours}h {cookingTime.minutes}m
+            </span>
+          </div>
+        </div>
+        <motion.button
+          className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-4 rounded-full flex items-center justify-center shadow-lg transition-all ease-in-out"
+          whileHover={{ scale: 1.05, backgroundColor: "#c53030" }}
+          whileTap={{ scale: 0.95 }}
+        >
+          View Recipe
+          <motion.div
+            animate={{ x: isHovered ? 5 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChevronRight size={22} className="ml-2" />
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+};
 
 const RecipeCards = () => {
-  const [recipes, setRecipes] = useState([]); //لتخزين الوصفات
+  const [recipes, setRecipes] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     axios
       .get("http://localhost:5001/api/recipes/recipes-get")
       .then((response) => {
-        setRecipes(response.data); //احدث الرسبي بلبيانات المستلمه
+        setRecipes(response.data);
       })
       .catch((error) => {
         console.error("Error fetching recipes:", error);
         setError("Error fetching recipes");
       });
   }, []);
-  //يعرض البطاقات
-  const RecipeCard = ({
-    name,
-    briefDescription,
-    mainImage,
-    chef,
-    cookingTime,
-  }) => (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 transform hover:scale-105 flex flex-col">
-      <img
-        src={`http://localhost:5001/${mainImage}`}
-        alt={name}
-        className="w-full h-48 object-cover"
-      />
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">{name}</h3>
-        <p className="text-gray-600 text-sm mb-4 flex-grow">
-          {briefDescription}
-        </p>
-        <div className="flex justify-between items-center mt-auto">
-          <span className="text-sm text-gray-500">
-            Chef: {chef ? chef.name : "Unknown"}
-          </span>
-          <span className="text-sm text-gray-500">
-            {cookingTime.hours}h {cookingTime.minutes}m
-          </span>
-        </div>
-        <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded-full border-none cursor-pointer transition-colors duration-300 hover:bg-red-600">
-          View Recipe
-        </button>
-      </div>
-    </div>
-  );
 
   return (
-    <div
-      className="bg-gradient-to-br bg-[#ffffff] py-16 relative overflow-hidden"
-      style={{
-        backgroundImage:
-          "url('https://img.freepik.com/premium-photo/painting-hamburger-salad-table_976492-49575.jpg?w=1060')", // ضع هنا رابط الصورة التي تريدها كخلفية
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
-            Our Delicious Recipes
-          </h2>
-          <div className="w-24 h-1 bg-red-500 mx-auto"></div>
-          <p className="mt-4 text-xl text-[#ffffff]">
-            Explore our collection of authentic Italian dishes
-          </p>
+    <div className="relative py-20 bg-gradient-to-b from-gray-100 via-white to-gray-200 overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage:
+            "url('https://img.freepik.com/free-photo/juicy-cheeseburger-wooden-cutting-board_9975-24326.jpg?ga=GA1.1.130154526.1725818326&semt=ais_hybrid')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(8px)",
+        }}
+      />
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+        <div className="text-center mb-16">
+          <motion.h2
+            className="text-5xl font-extrabold text-gray-800 mb-6 drop-shadow-lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Our Culinary Masterpieces
+          </motion.h2>
+          <motion.div
+            className="w-36 h-1 bg-gradient-to-r from-red-500 to-red-600 mx-auto mb-8"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          />
+          <motion.p
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            Embark on a gastronomic journey through our collection of authentic
+            Italian recipes
+          </motion.p>
         </div>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {recipes.slice(0, 3).map(
-            (
-              recipe // تحديد عرض 3 بطاقات فقط
-            ) => (
-              <RecipeCard key={recipe._id} {...recipe} />
-            )
-          )}
-        </div>
+
+        {error && (
+          <motion.p
+            className="text-red-500 text-center mb-8 text-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {error}
+          </motion.p>
+        )}
+
+        <motion.div
+          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, staggerChildren: 0.2, delayChildren: 1 }}
+        >
+          {recipes.slice(0, 3).map((recipe) => (
+            <RecipeCard key={recipe._id} {...recipe} />
+          ))}
+        </motion.div>
       </div>
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <img
-          src="/pasta-icon.svg"
-          alt="Pasta"
-          className="absolute top-10 left-10 w-20 h-20 opacity-10 transform rotate-12"
-        />
-        <img
-          src="/pizza-icon.svg"
-          alt="Pizza"
-          className="absolute bottom-10 right-10 w-24 h-24 opacity-10 transform -rotate-12"
-        />
-        <img
-          src="/tomato-icon.svg"
-          alt="Tomato"
-          className="absolute top-1/3 right-1/4 w-16 h-16 opacity-10"
-        />
-        <img
-          src="/basil-icon.svg"
-          alt="Basil"
-          className="absolute bottom-1/4 left-1/3 w-12 h-12 opacity-10 transform rotate-45"
-        />
-      </div>
+
+      {/* Floating Decorative Elements */}
+      <motion.img
+        src={M1}
+        alt="Pasta"
+        className="absolute top-12 left-12 w-52 h-52 opacity-30 transform rotate-12 animate-bounce"
+        animate={{ rotate: [0, 20, 0] }}
+        transition={{ duration: 5, repeat: Infinity }}
+      />
+      <motion.img
+        src={M2}
+        alt="Pizza"
+        className="absolute bottom-10 right-0 w-44 h-44 opacity-30 transform -rotate-12 animate-bounce delay-75"
+        animate={{ rotate: [0, -20, 0] }}
+        transition={{ duration: 5, repeat: Infinity }}
+      />
+      <motion.img
+        src={M3}
+        alt="Tomato"
+        className="absolute top-[15%] right-[25%] w-56 h-56 opacity-30 animate-bounce delay-100"
+      />
     </div>
   );
 };

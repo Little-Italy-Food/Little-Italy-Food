@@ -14,6 +14,10 @@ import { CartContext } from "../src/cartcontext";
 import logo from "../src/assets/logo(2).png";
 import axios from "axios";
 
+import Cart from "./assets/new/cart.png";
+import Bill from "./assets/new/bell.png";
+import User from "./assets/new/user (1).png";
+
 const Navbar = () => {
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useContext(CartContext);
@@ -134,64 +138,72 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-lg">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex justify-between">
-          <div className="flex space-x-7">
-            <Link to="/" className="flex items-center py-4 ">
-              <img src={logo} alt="Logo" className="h-20 w-35 mr-10" />
+      <div className="max-w-[85rem] mx-auto">
+        <div className="flex items-center justify-between -px-10 py-2">
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <img src={logo} alt="Logo" className="h-20 w-35" />
             </Link>
-            <div className="hidden md:flex items-center space-x-1">
-              <Link
-                to="/recipes"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                Recipe
-              </Link>{" "}
-              <Link
-                to="/recipe-finder"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                Discover Recipes
-              </Link>{" "}
-              <Link
-                to="/substitute-finder"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                Ingredient Swap
-              </Link>{" "}
-              <Link
-                to="/ourchefs"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                OurShef
-              </Link>{" "}
-              <Link
-                to="/dishespage"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                Shop
-              </Link>
-              <Link
-                to="/about"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                About
-              </Link>
-              <Link
-                to="/contact"
-                className="py-4 px-2 text-gray-500 hover:text-green-500 transition duration-300"
-              >
-                Contact
-              </Link>
-            </div>
+          </div>
+          <div className="hidden md:flex flex-grow items-center justify-center space-x-4">
+            <Link
+              to="/recipes"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Recipe
+            </Link>
+            <Link
+              to="/recipe-finder"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Discover Recipes
+            </Link>
+            <Link
+              to="/substitute-finder"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Ingredient Swap
+            </Link>
+            <Link
+              to="/ourchefs"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              OurChefs
+            </Link>
+            <Link
+              to="/dishespage"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Shop
+            </Link>
+            <Link
+              to="/about"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              About
+            </Link>
+            <Link
+              to="/contact"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Contact
+            </Link>{" "}
+            <a
+              href="http://localhost:5174/"
+              target="blank"
+              className="py-4 px-2 text-gray-500 hover:text-orange-500 transition duration-300"
+            >
+              Community
+            </a>
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
             <button
               onClick={() => setShowCart(!showCart)}
-              className="relative py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300"
+              className="relative py-2 px-2 font-medium text-gray-500 rounded hover:bg-orange-200 hover:rounded-full hover:text-white transition duration-300"
             >
-              <FaCartPlus className="inline-block text-xl" />
+              <img src={Cart} alt="" className="inline-block text-xl w-9 h-9" />
+              {/* <FaCartPlus  /> */}
               {itemCount > 0 && (
                 <span className="ml-1 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
                   {itemCount}
@@ -203,9 +215,13 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300"
+                  className="relative py-2 px-2 font-medium text-gray-500 rounded hover:bg-orange-200 hover:rounded-full hover:text-white transition duration-300"
                 >
-                  <FaBell className="inline-block text-xl" />
+                  <img
+                    src={Bill}
+                    alt=""
+                    className="inline-block text-xl w-9 h-9"
+                  />
                   {notifications.some((n) => !n.isRead) && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-2 h-2"></span>
                   )}
@@ -248,7 +264,7 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300"
+                  className="relative py-2 px-2 font-medium text-gray-500 rounded hover:bg-orange-200 hover:rounded-full hover:text-white transition duration-300"
                 >
                   {profileImage ? (
                     <img
@@ -257,7 +273,11 @@ const Navbar = () => {
                       className="w-8 h-8 rounded-full object-cover"
                     />
                   ) : (
-                    <FaUserCircle className="inline-block text-xl" />
+                    <img
+                      src={User}
+                      alt=""
+                      className="inline-block text-xl w-9 h-9"
+                    />
                   )}
                 </button>
                 {showProfileMenu && (

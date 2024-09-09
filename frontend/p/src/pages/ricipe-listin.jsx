@@ -164,12 +164,12 @@ const RecipeCards = () => {
           autoPlay
           loop
           muted
-          className="absolute inset-0 w-full h-[30rem] object-cover"
+          className="absolute inset-0 w-full h-[32rem] object-cover"
         />
 
-        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px] " />
+        <div className="absolute inset-0 bg-black bg-opacity-50 " />
 
-        <div className="relative z-50 h-[30rem] max-w-6xl mx-auto flex flex-col justify-center items-center text-center text-white p-6"></div>
+        <div className="relative z-50 h-[32rem] max-w-6xl mx-auto flex flex-col justify-center items-center text-center text-white p-6"></div>
       </div>
 
       {/* Main Content */}
@@ -184,7 +184,7 @@ const RecipeCards = () => {
         </div>
 
         {/* Recipes and Results */}
-        <div className="relative">
+        <div className="relative mb-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 lg:px-20 mt-10 mb-16">
             {noResults ? (
               <p className="text-center">No recipes found.</p>
@@ -226,7 +226,7 @@ const RecipeCards = () => {
 
         {/* Pagination */}
         {filteredRecipes.length > 0 && (
-          <div className="flex justify-center mb-12">
+          <div className="flex justify-center mt-6 mb-12">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

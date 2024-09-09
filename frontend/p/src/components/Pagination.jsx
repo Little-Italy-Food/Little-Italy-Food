@@ -9,14 +9,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         {/* Adjust mb value for testing */}
         <button
           className="bg-[#FF5733] text-white py-2 px-4 rounded-lg"
-          disabled={currentPage === 1}
+          // disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
         >
           Prev
         </button>
         <button
           className="bg-[#FF5733] text-white py-2 px-4 rounded-lg"
-          disabled={currentPage === totalPages}
+          // disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
         >
           Next
