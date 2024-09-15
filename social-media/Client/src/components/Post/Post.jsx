@@ -321,7 +321,9 @@ const Post = ({ data }) => {
         {data.replies.map((reply) => (
           <div key={reply._id} className="reply">
             <span>
-              <b>{reply.userId.username}</b>
+              <b>
+                {reply.userId?.username ? reply.userId.username : "Anonymous"}
+              </b>
             </span>
             <p>{reply.desc}</p>
           </div>
